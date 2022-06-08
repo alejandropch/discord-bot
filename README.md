@@ -16,3 +16,8 @@ Finally run the bot:
 
 ```python3 bot.py```
 
+## Deployment
+
+ - Provision a new ubuntu server.
+ - Install PM2 node package.
+ - Run:``` pm2 start bot.py --name="<bot name>" --interpreter=python3```
