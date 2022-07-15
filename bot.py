@@ -3,34 +3,38 @@ import requests
 from dotenv import load_dotenv
 import json
 import os
+from discord.ext import commands
+from discord import app_commands
+#install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
 
-intents = discord.Intents.all()
-client = discord.Client(intents=intents)
+class aclient(discord.Client):
+    def __init__(self):
+        super().__init__(intents = discord.Intents.default())
+        self.synced = False
 
-@client.event
-async def on_ready():
-    print('Connected as {0.user}'.format(client))
+    async def on_ready(self):
+        await self.wait_until_ready()
+        if not self.synced:
+            await tree.sync(guild = discord.Object(id = os.environ["GUILD_ID"]))
+            self.synced = True
+        print(f"We have logged in as {self.user}.")
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    else:
-        participant = {
-            'id': str(message.author.id),
-            'avatar_url': message.author.avatar_url,
-            'name': message.author.name,
-            'display_name': message.author.display_name,
-            'discriminator': message.author.discriminator,
-            'joined_at': message.author.joined_at,
-        }
+client = aclient()
+tree = app_commands.CommandTree(client)
 
-        req = requests.post(os.environ["API_URL"] + '/api/participant', data = json.dumps(participant), headers = {
-            'Content-Type': 'aplication/json'
-        })
+@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'trivia', description = 'Answer trivia questions and earn points')
+async def trivia(interaction: discord.Interaction):
+    await interaction.response.send_message(f"You've selected the trivia slash command", ephemeral = True)
 
+@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'attendance', description = 'Attend discord events and earn points')
+async def attendance(interaction: discord.Interaction):
+    await interaction.response.send_message(f"You've selected the attendance slash command", ephemeral = True)
+
+@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'random', description = 'Random events to earn points')
+async def random(interaction: discord.Interaction):
+    await interaction.response.send_message(f"You've selected the random slash command", ephemeral = True)
 
 client.run(bot_token)
