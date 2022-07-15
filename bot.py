@@ -26,15 +26,15 @@ client = aclient()
 tree = app_commands.CommandTree(client)
 
 @tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'trivia', description = 'Answer trivia questions and earn points')
-async def trivia(interaction: discord.Interaction):
+async def trivia(interaction: discord.Interaction, event: str, answer: str):
     await interaction.response.send_message(f"You've selected the trivia slash command", ephemeral = True)
 
 @tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'attendance', description = 'Attend discord events and earn points')
-async def attendance(interaction: discord.Interaction):
+async def attendance(interaction: discord.Interaction, event: str):
     await interaction.response.send_message(f"You've selected the attendance slash command", ephemeral = True)
 
 @tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'random', description = 'Random events to earn points')
-async def random(interaction: discord.Interaction):
+async def random(interaction: discord.Interaction, event: str):
     await interaction.response.send_message(f"You've selected the random slash command", ephemeral = True)
 
 client.run(bot_token)
