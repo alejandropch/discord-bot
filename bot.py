@@ -7,6 +7,8 @@ from discord.ext import commands
 from discord import app_commands
 #install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
+from interactions.trivia import handle as handleTrivia
+
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
 
@@ -27,7 +29,8 @@ tree = app_commands.CommandTree(client)
 
 @tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'trivia', description = 'Answer trivia questions and earn points')
 async def trivia(interaction: discord.Interaction, event: str, answer: str):
-    await interaction.response.send_message(f"You've selected the trivia slash command", ephemeral = True)
+    response = await handleTrivia(interaction, event, answer)
+    await interaction.response.send_message(response, ephemeral = True)
 
 @tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'attendance', description = 'Attend discord events and earn points')
 async def attendance(interaction: discord.Interaction, event: str):
