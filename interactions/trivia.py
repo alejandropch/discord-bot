@@ -9,7 +9,7 @@ async def handle(interaction: discord.Interaction, event: str, answer: str):
         "member": {
             "discord_id": str(interaction.user.id),
             "discord_username": interaction.user.name,
-            "avatar_url": str(interaction.user.avatar.url)
+            "avatar_url": str(interaction.user.avatar.url if interaction.user.avatar is not None else '')
         },
         "event_code": event,
         "answer": answer
@@ -19,6 +19,6 @@ async def handle(interaction: discord.Interaction, event: str, answer: str):
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
-    
+        
     return x.json()['message']
 
