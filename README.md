@@ -2,7 +2,7 @@
 
 Bot provided to handle user interaction and collect user data from guilds where it is present.
 
-## How to run
+## How to run locally
 
 First install the nedded dependencies:
 
@@ -21,3 +21,7 @@ Finally run the bot:
  - Provision a new ubuntu server.
  - Install PM2 node package.
  - Run:``` pm2 start bot.py --name="<bot name>" --interpreter=python3```
+
+ ## Discord.py Documentation
+
+[Official Documentation](https://discordpy.readthedocs.io/en/latest/index.html)
