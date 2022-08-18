@@ -6,19 +6,16 @@ import os
 from discord.ext import commands
 from discord import app_commands
 #install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
-
+#handlers
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
+from interactions.mult import handle as handleMult
+from interactions.mult import getEvent
+#views
+from views.views import Buttons
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
-
-class Buttons(discord.ui.View):
-    def __init__(self, *, timeout=180):
-        super().__init__(timeout=timeout)
-    @discord.ui.button(label="Click me!",style=discord.ButtonStyle.red)
-    async def blue_button(self,button:discord.ui.Button,interaction:discord.Interaction):
-        await interaction.response.edit_message(content=f"You clicked the button!!")
 
 class aclient(discord.Client):
     def __init__(self):
@@ -52,5 +49,10 @@ async def random(interaction: discord.Interaction, event: str):
 @tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'button', description = 'Shows test button')
 async def button(interaction: discord.Interaction):
     await interaction.response.send_message(f"Register by clicking the button", view = Buttons(), ephemeral = True)
+
+@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'mult', description = 'Shows multiple options for a question')
+async def mult(interaction: discord.Interaction, event: str):
+    response = await getEvent(event)
+    await interaction.response.send_message(response['question'], view = Buttons(options = response['options']), ephemeral = True)
 
 client.run(bot_token)
