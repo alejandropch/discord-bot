@@ -9,6 +9,7 @@ from discord import app_commands
 
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
+from interactions.leaderboard import handle as handleLeaderboard
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
@@ -52,5 +53,10 @@ async def random(interaction: discord.Interaction, event: str):
 @tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'button', description = 'Shows test button')
 async def button(interaction: discord.Interaction):
     await interaction.response.send_message(f"Register by clicking the button", view = Buttons(), ephemeral = True)
+
+@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'leaderboard', description = 'Season Leaderboard')
+async def leaderboard(interaction: discord.Interaction, season: str):
+    response = await handleLeaderboard(interaction, season)
+    await interaction.response.send_message(response, ephemeral = True)
 
 client.run(bot_token)
