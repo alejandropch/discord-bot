@@ -13,6 +13,7 @@ from interactions.mult import handle as handleMult
 from interactions.mult import getEvent
 #views
 from views.views import Buttons
+from views.modal import TriviaModal
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
@@ -32,11 +33,6 @@ class aclient(discord.Client):
 client = aclient()
 tree = app_commands.CommandTree(client)
 
-@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'trivia', description = 'Answer trivia questions and earn points')
-async def trivia(interaction: discord.Interaction, event: str, answer: str):
-    response = await handleTrivia(interaction, event, answer)
-    await interaction.response.send_message(response, ephemeral = True)
-
 @tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'attendance', description = 'Attend discord events and earn points')
 async def attendance(interaction: discord.Interaction, event: str):
     await interaction.response.send_message(f"You've selected the attendance slash command", ephemeral = True)
@@ -46,13 +42,13 @@ async def random(interaction: discord.Interaction, event: str):
     response = await handleRandom(interaction, event)
     await interaction.response.send_message(response, ephemeral = True)
 
-@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'button', description = 'Shows test button')
-async def button(interaction: discord.Interaction):
-    await interaction.response.send_message(f"Register by clicking the button", view = Buttons(), ephemeral = True)
-
-@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'mult', description = 'Shows multiple options for a question')
-async def mult(interaction: discord.Interaction, event: str):
+@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'trivia', description = 'Answer trivia questions and earn points')
+async def trivia(interaction: discord.Interaction, event: str):
     response = await getEvent(event)
-    await interaction.response.send_message(response['question'], view = Buttons(options = response['options']), ephemeral = True)
+    if response['multiple']:
+        await interaction.response.send_message(response['question'], view = Buttons(options = response['options'], event = event, question = response['question']), ephemeral = True)
+    else:
+        await interaction.response.send_modal(TriviaModal(title = response['question'], event = event))
+
 
 client.run(bot_token)
