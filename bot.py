@@ -9,11 +9,14 @@ from discord import app_commands
 #handlers
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
+from interactions.leaderboard import handle as handleLeaderboard
 from interactions.mult import handle as handleMult
 from interactions.mult import getEvent
 #views
 from views.views import Buttons
 from views.modal import TriviaModal
+
+
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
@@ -50,5 +53,10 @@ async def trivia(interaction: discord.Interaction, event: str):
     else:
         await interaction.response.send_modal(TriviaModal(title = response['question'], event = event))
 
+
+@tree.command(guild = discord.Object(id = os.environ["GUILD_ID"]), name = 'leaderboard', description = 'Season Leaderboard')
+async def leaderboard(interaction: discord.Interaction, season: str):
+    response = await handleLeaderboard(interaction, season)
+    await interaction.response.send_message(response, ephemeral = True)
 
 client.run(bot_token)
