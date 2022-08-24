@@ -72,7 +72,7 @@ class YorNButtons(discord.ui.View):
         return self.value
 
 
-async def dmUser(self, isValid=True, msg="", firstCall=False):
+async def dmUser(self, isValid=True, msg=""):
     global i
 
     def check(message):
@@ -90,16 +90,14 @@ async def dmUser(self, isValid=True, msg="", firstCall=False):
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + os.environ["API_KEY"]
     })
+    print((value.text))
     isRegistered = json.loads(value.text)['data']
     if isRegistered:
-        await user.send(f"Hey {user.name}, seems that we tried to registering you again. Buy you're already on our database!. Sorry ☹️")
+        await user.send(f"Hey {user.name}, seems that we tried to register you again. Buy you're already on our database!. Sorry ☹️")
         return
 
     if isValid == False:
         await user.send(f"Value provided is invalid. {msg}")
-
-    if firstCall == True:
-        await user.send(f"hey {user.name}, this is a form test\nType **\"-restart\"** at any moment if you want to start again your summision")
 
     if winner.name == '' and i == 0:
         await user.send("What is your first name?")
@@ -180,11 +178,12 @@ class aclient(discord.Client):
         print(f"We have logged in as {self.user}.")
 
         # TODO: make a trigger from admin
-        # await dmUser(self, firstCall=True)
+        # await dmUser(self)
 
     async def on_message(self, message):
         global i
         if message.author == self.user:
+            """ print(message) """
             return
 
         # the form have already been printed
@@ -192,10 +191,10 @@ class aclient(discord.Client):
 
         if isValid == True:
             i += 1
-            # await dmUser(self, isValid=True)
+            """ await dmUser(self, isValid=True) """
 
         else:
-            return await dmUser(self, isValid, message)
+            """ return await dmUser(self, isValid, message) """
 
 
 client = aclient()
