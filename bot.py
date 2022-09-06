@@ -9,9 +9,11 @@ from discord import app_commands
 
 #from ui.YorNButtons import YorNButtons
 from utils.User import User
+from utils.userExists import handle as userExists
+
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
-from utils.formHandler import handle as handleForm
+from interactions.register import handle as handleForm
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
 from interactions.leaderboard import handle as handleLeaderboard
