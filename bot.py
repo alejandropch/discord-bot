@@ -187,6 +187,22 @@ winner = User()
 tree = app_commands.CommandTree(client)
 
 
+@ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
+async def register(interaction: discord.Interaction, season: str):
+    # true if the user exists in the db
+    isRegistered = await userExists(str(interaction.user.id))
+    if isRegistered is True:
+        await interaction.response.send_message(f"Hey {interaction.user.name}, seems that we tried to register you again. Buy you're already on our database!. Sorry ☹️", ephemeral=True)
+        return
+
+    # filling the remaining data from discord that must be sent to the CE admin
+    winner.setRemanaingData(interaction, season)
+    user = await client.fetch_user(str(interaction.user.id))
+    await interaction.response.send_message(f"Thanks for registering - I sent you a direct message, please check settings if you did not receive it.", ephemeral=True)
+
+    await dmUser(user)
+
+
 @ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
 async def trivia(interaction: discord.Interaction, event: str, answer: str):
     response = await handleTrivia(interaction, event, answer)
