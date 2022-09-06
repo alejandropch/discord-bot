@@ -1,9 +1,8 @@
+from pickle import FALSE
 from tabnanny import check
 from urllib import response
 import discord
-import requests
 from dotenv import load_dotenv
-import json
 import os
 from discord.ext import commands
 from discord import app_commands
