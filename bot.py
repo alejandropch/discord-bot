@@ -74,70 +74,52 @@ class YorNButtons(discord.ui.View):
         return self.value
 
 
-async def dmUser(self, isValid=True, msg=""):
+async def dmUser(user, isValid=True, msg=""):
     global i
 
     def check(message):
-        if message.author == self.user:
-            return False
+        return False if checkIfError(message.content) is False else True
 
-        if checkIfError(message.content) == False:
-            return False
-
-        return True
-
-    user = await client.fetch_user(winner.id)
-
-    value = requests.get(os.environ["API_URL"] + f'/participants/{user.id}', headers={
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + os.environ["API_KEY"]
-    })
-    print((value.text))
-    isRegistered = json.loads(value.text)['data']
-    if isRegistered:
-        await user.send(f"Hey {user.name}, seems that we tried to register you again. Buy you're already on our database!. Sorry ☹️")
-        return
-
-    if isValid == False:
-        await user.send(f"Value provided is invalid. {msg}")
-
-    if winner.name == '' and i == 0:
+    if i == 0:
         await user.send("What is your first name?")
+
         name = (await client.wait_for("message", check=check)).content
         if name == "":
             return
 
         winner.name = isValid and name or ''
 
-    if winner.lastName == '' and i == 1:
+    if i == 1:
         await user.send("What is your last name?")
         lastName = (await client.wait_for("message", check=check)).content
         if lastName == "":
             return
         winner.lastName = isValid and lastName or ''
 
-    if winner.address1 == '' and i == 2:
+    if i == 2:
         await user.send("Please provide your Address (first line)")
         address1 = (await client.wait_for("message", check=check)).content
         if address1 == "":
             return
         winner.address1 = isValid and address1 or ''
 
-    if winner.address2 == '' and i == 3:
+    if i == 3:
         await user.send("Please provide your Address 2 (if none, please type '-')")
         address2 = (await client.wait_for("message", check=check)).content
+
         if address2 == "" or address2.strip() == "-":
+
             return
         winner.address2 = isValid and address2 or ''
 
-    if winner.city == '' and i == 4:
+    if i == 4:
         await user.send("Please provide your City")
         city = (await client.wait_for("message", check=check)).content
         if city == "":
             return
         winner.city = isValid and city or ''
 
-    if winner.state == '' and i == 5:
+    if i == 5:
         await user.send("Please provide your State/Province")
         state = (await client.wait_for("message", check=check)).content
         if state == "":
@@ -145,14 +127,14 @@ async def dmUser(self, isValid=True, msg=""):
 
         winner.state = isValid and state or ''
 
-    if winner.postalCode == '' and i == 6:
+    if i == 6:
         await user.send("Please provide your Postal Code")
         postalCode = (await client.wait_for("message", check=check)).content
         if postalCode == "":
             return
         winner.postalCode = isValid and postalCode or ''
 
-    if winner.country == '' and i == 7:
+    if i == 7:
         await user.send("Please provide your Country")
         country = (await client.wait_for("message", check=check)).content
         if country == "":
