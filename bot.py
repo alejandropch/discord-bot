@@ -177,6 +177,7 @@ class aclient(discord.Client):
         else:
             i += 1
 
+        # TODO: adding a condition when sending the user form
         await dmUser(user)
 
 
