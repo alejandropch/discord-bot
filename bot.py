@@ -177,6 +177,7 @@ class aclient(discord.Client):
         else:
             i += 1
 
+        await dmUser(user)
 
 
 client = aclient()
