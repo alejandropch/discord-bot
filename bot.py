@@ -64,7 +64,8 @@ class YorNButtons(discord.ui.View):
             winner.clear()
             self.value = False
             i = 0
-            # return await dmUser(client)
+            user = await client.fetch_user(str(interaction.user.id))
+            return await dmUser(user)
         else:
             await interaction.response.edit_message(content=f"You already clicked this button!!")
         return
