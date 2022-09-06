@@ -14,8 +14,9 @@ class User:
         self.postalCode = ''
         self.discordUsername = ''
         self.country = ''
+        self.discord_id = ''
+        self.avatar_url = ''
         self.isWinner = False
-        self.id = id or os.environ["DISCORD_ID_FOR_TESTING"]
 
     async def printResult(self, user):
         await user.send(
