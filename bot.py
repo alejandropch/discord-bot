@@ -21,6 +21,8 @@ from utils.formErrorHandler import checkIfError, formErrorHandler
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
+
+# "i" variable is an iterable for the winner form, open to sugestions
 i = 0
 
 
@@ -142,7 +144,7 @@ async def dmUser(user, isValid=True, msg=""):
         winner.country = isValid and country or ''
 
     if i == 8:
-        # filling the remaining data from discord to the CE admin
+
         view = YorNButtons()
 
         await winner.printResult(user)
@@ -161,13 +163,10 @@ class aclient(discord.Client):
             self.synced = True
         print(f"We have logged in as {self.user}.")
 
-        # TODO: make a trigger from admin
-        # await dmUser(self)
-
     async def on_message(self, message):
         global i
+
         if message.author == self.user:
-            """ print(message) """
             return
 
         [isValid, errMessage] = formErrorHandler(message.content)
@@ -177,10 +176,7 @@ class aclient(discord.Client):
             await user.send(f"Value provided is invalid. {errMessage}")
         else:
             i += 1
-            """ await dmUser(self, isValid=True) """
 
-        else:
-            """ return await dmUser(self, isValid, message) """
 
 
 client = aclient()
