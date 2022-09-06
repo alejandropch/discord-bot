@@ -45,11 +45,3 @@ class User:
         self.state = ''
         self.postalCode = ''
         self.country = ''
-
-
-"""     def isFufilled(self):
-        for attr in self.__dict__.keys():
-            if attr == '':
-                print(attr)
-                return False
-        return True """
