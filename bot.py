@@ -144,7 +144,7 @@ async def dmUser(user, isValid=True, msg=""):
     if i == 8:
         # filling the remaining data from discord to the CE admin
         view = YorNButtons()
-        winner.setRemanaingData(user)
+
         await winner.printResult(user)
         await user.send('Does this look correct?\nClick **\"Yes\"** to submit \nClick **\"No\"** for start over', view=view)
 
