@@ -170,10 +170,12 @@ class aclient(discord.Client):
             """ print(message) """
             return
 
-        # the form have already been printed
-        [isValid, message] = formErrorHandler(message.content)
+        [isValid, errMessage] = formErrorHandler(message.content)
+        user = await client.fetch_user(message.author.id)
 
-        if isValid == True:
+        if isValid == False:
+            await user.send(f"Value provided is invalid. {errMessage}")
+        else:
             i += 1
             """ await dmUser(self, isValid=True) """
 
