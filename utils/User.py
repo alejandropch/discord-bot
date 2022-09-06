@@ -23,10 +23,18 @@ class User:
             f"```👤 Name: {self.name}\n👥 Lastname: {self.lastName}\n🏠 Address: {self.address1}\n🏠 Second Address(Optional): {self.address2}\n🏙️ City: {self.city}\n🗺️ State/Province: {self.state}\n📮 Postal: {self.postalCode}\n🌎 Country: {self.country}```"
         )
 
-    def setRemanaingData(self, user):
-        """ print(user) """
+    def setRemanaingData(self, interaction: discord.Interaction, season: str):
         self.isWinner = True
-        self.discordUsername = user.name
+
+        # this will return an array, thats way is stored in an aux variable
+        aux = interaction.user.name + \
+            '#' + interaction.user.discriminator,
+        self.discordUsername = aux[0]
+
+        self.avatar_url = str(
+            interaction.user.avatar.url if interaction.user.avatar is not None else '')
+        self.discord_id = str(interaction.user.id)
+        # TODO: put this season id into the pivot table
 
     def clear(self):
         self.name = ''
