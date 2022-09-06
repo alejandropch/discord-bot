@@ -4,7 +4,7 @@ import os
 
 class User:
 
-    def __init__(self, id=None):
+    def __init__(self):
         self.name = ''
         self.lastName = ''
         self.address1 = ''
