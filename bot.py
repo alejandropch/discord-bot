@@ -60,7 +60,7 @@ class aclient(discord.Client):
 
 
 client = aclient()
-winner = User()
+winner = User(client)
 
 tree = app_commands.CommandTree(client)
 
