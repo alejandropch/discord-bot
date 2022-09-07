@@ -111,6 +111,7 @@ class User(FormManager):
             await self.formOver(self, view)
 
     def clear(self):
+        """ restart the iterator and the attributes of the winner user """
         self.name = ''
         self.lastName = ''
         self.address1 = ''
