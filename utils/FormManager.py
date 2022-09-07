@@ -1,6 +1,7 @@
 import requests
 import os
 import json
+import re
 
 
 class FormManager:
