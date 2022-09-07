@@ -3,24 +3,6 @@ from utils.userExists import handle as userExists
 from utils.User import User
 
 
-async def handle(user):
-    print(user.discordUsername)
-    data = {
-        "member": {
-            "name": user.name,
-            "lastname": user.lastName,
-            "address_1": user.address1,
-            "address_2": user.address2,
-            "city": user.city,
-            "state": user.state,
-            "postal_code": user.postalCode,
-            "country": user.country,
-            "discord_id": user.discord_id,
-            "discord_username": user.discordUsername,
-            "avatar_url": user.avatar_url,
-            "winner": user.isWinner
-        },
-    }
 
     value = requests.post(os.environ["API_URL"] + '/participants/', data=json.dumps(data), headers={
         'Content-Type': 'application/json',
