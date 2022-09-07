@@ -40,9 +40,9 @@ class User(FormManager):
     async def dmUser(self):
 
         def check(message):
-            # if the bot respond a question for the user, it should be consider an error. Hence, if the one responding the message is not the winner user, it should be an error
-            if message.author != self.discordUsername:
-                False
+            # if the bot respond a question for the user, it should be consider an error. Hence, if the one responding the message is not the winner user, it should be an error, open to suggestions
+            # if message.author != self.discordUsername:
+            #    return False
 
             response = self.errorHandler(message.content)
             return False if response is False else True
