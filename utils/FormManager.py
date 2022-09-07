@@ -56,6 +56,20 @@ class FormManager:
         """ this will call the printResult function and it will send a message to the user to confirm if everything is ok or not """
         await self.printResult(user)
         await self.userObject.send('Does this look correct?\nClick **\"Yes\"** to submit \nClick **\"No\"** for start over', view=view)
+
+    def errorHandler(self, message, getMsg=False):
+        err = None
+        if len(message) > 255:
+            err = "Please do not use more than 255 characters"
         if re.match("^[-\w\s.,']*$", message) is None:
+            err = "Please do not use special characters"
+        if err is None:
+            if getMsg is True:
+                return [True, '']
+            else:
+                return True
+        else:
+            if getMsg is True:
+                return [False, err]
             else:
                 return False
