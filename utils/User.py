@@ -20,12 +20,7 @@ class User(FormManager):
         self.avatar_url = ''
         self.isWinner = False
 
-    async def printResult(self, user):
-        await user.send(
-            f"```👤 Name: {self.name}\n👥 Lastname: {self.lastName}\n🏠 Address: {self.address1}\n🏠 Second Address(Optional): {self.address2}\n🏙️ City: {self.city}\n🗺️ State/Province: {self.state}\n📮 Postal: {self.postalCode}\n🌎 Country: {self.country}```"
-        )
 
-    def setRemanaingData(self, interaction: discord.Interaction, season: str):
         self.isWinner = True
 
         # this will return an array, thats way is stored in an aux variable
