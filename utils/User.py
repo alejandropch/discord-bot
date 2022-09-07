@@ -20,6 +20,8 @@ class User(FormManager):
         self.avatar_url = ''
         self.isWinner = False
 
+    async def setRemanaingData(self, interaction: discord.Interaction, season: str):
+        """ this function does fill the remaining data from discord that must be sent to the CE admin"""
 
         self.isWinner = True
 
