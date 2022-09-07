@@ -53,7 +53,7 @@ class aclient(discord.Client):
         if isValid == False:
             await user.send(f"Value provided is invalid. {errMessage}")
         else:
-            i += 1
+            winner.nextQuestion()
 
         # TODO: adding a condition when sending the user form
         await dmUser(user)
