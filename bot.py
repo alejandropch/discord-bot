@@ -15,6 +15,12 @@ from interactions.register import handle as handleRegister
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
 from interactions.leaderboard import handle as handleLeaderboard
+from interactions.mult import handle as handleMult
+from interactions.mult import getEvent
+# views
+from views.views import Buttons
+from views.modal import TriviaModal
+
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
@@ -25,7 +31,7 @@ class Buttons(discord.ui.View):
         super().__init__(timeout=timeout)
 
     @discord.ui.button(label="Click me!", style=discord.ButtonStyle.red)
-    async def blue_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def blue_button(self, button: discord.ui.Button, interaction: discord.Interaction):
         await interaction.response.edit_message(content=f"You clicked the button!!")
 
 
@@ -84,15 +90,19 @@ async def attendance(interaction: discord.Interaction, event: str):
     await interaction.response.send_message(f"You've selected the attendance slash command", ephemeral=True)
 
 
-@ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='random', description='Random events to earn points')
+@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='random', description='Random events to earn points')
 async def random(interaction: discord.Interaction, event: str):
     response = await handleRandom(interaction, event)
     await interaction.response.send_message(response, ephemeral=True)
 
 
-@ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='button', description='Shows test button')
-async def button(interaction: discord.Interaction):
-    await interaction.response.send_message(f"Register by clicking the button", view=Buttons(), ephemeral=True)
+@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
+async def trivia(interaction: discord.Interaction, event: str):
+    response = await getEvent(event)
+    if response['multiple']:
+        await interaction.response.send_message(response['question'], view=Buttons(options=response['options'], event=event, question=response['question']), ephemeral=True)
+    else:
+        await interaction.response.send_modal(TriviaModal(title=response['question'], event=event))
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
