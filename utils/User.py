@@ -1,6 +1,6 @@
 import discord
 from utils.FormManager import FormManager
-from utils.YorNButtons import YorNButtons
+from views.YorNButtons import YorNButtons
 
 
 class User(FormManager):
