@@ -67,8 +67,8 @@ tree = app_commands.CommandTree(client)
 
 @ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
 async def register(interaction: discord.Interaction, season: str):
-    # true if the user exists in the db
-    isRegistered = await userExists(str(interaction.user.id))
+    [response, isRegistered] = await handleRegister(interaction, season, winner)
+    await interaction.response.send_message(response, ephemeral=True)
     if isRegistered is True:
         await interaction.response.send_message(f"Hey {interaction.user.name}, seems that we tried to register you again. Buy you're already on our database!. Sorry ☹️", ephemeral=True)
         return
