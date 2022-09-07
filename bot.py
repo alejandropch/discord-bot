@@ -20,9 +20,6 @@ from utils.formErrorHandler import formErrorHandler
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
 
-# "i" variable is an iterable for the winner form, open to sugestions
-i = 0
-
 
 class Buttons(discord.ui.View):
     def __init__(self, *, timeout=180):
@@ -162,7 +159,6 @@ class aclient(discord.Client):
         print(f"We have logged in as {self.user}.")
 
     async def on_message(self, message):
-        global i
 
         if message.author == self.user:
             return
