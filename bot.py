@@ -70,7 +70,6 @@ async def register(interaction: discord.Interaction, season: str):
     [response, isRegistered] = await handleRegister(interaction, season, winner)
     await interaction.response.send_message(response, ephemeral=True)
     if isRegistered is True:
-        await interaction.response.send_message(f"Hey {interaction.user.name}, seems that we tried to register you again. Buy you're already on our database!. Sorry ☹️", ephemeral=True)
         return
     await winner.dmUser()
 
