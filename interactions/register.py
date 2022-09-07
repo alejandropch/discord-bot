@@ -1,10 +1,6 @@
 import discord
-from cmath import log
-import requests
-import os
-import json
-from dotenv import load_dotenv
 from utils.userExists import handle as userExists
+from utils.User import User
 
 
 async def handle(user):
