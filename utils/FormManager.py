@@ -56,3 +56,6 @@ class FormManager:
         """ this will call the printResult function and it will send a message to the user to confirm if everything is ok or not """
         await self.printResult(user)
         await self.userObject.send('Does this look correct?\nClick **\"Yes\"** to submit \nClick **\"No\"** for start over', view=view)
+        if re.match("^[-\w\s.,']*$", message) is None:
+            else:
+                return False
