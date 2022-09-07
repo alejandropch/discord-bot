@@ -33,6 +33,8 @@ class User(FormManager):
         self.avatar_url = str(
             interaction.user.avatar.url if interaction.user.avatar is not None else '')
         self.discord_id = str(interaction.user.id)
+
+        self.userObject = await self.client.fetch_user(self.discord_id)
         # TODO: put this season id into the pivot table
 
     def clear(self):
