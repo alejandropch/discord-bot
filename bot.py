@@ -79,12 +79,6 @@ async def register(interaction: discord.Interaction, season: str):
     await winner.dmUser()
 
 
-@ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
-async def trivia(interaction: discord.Interaction, event: str, answer: str):
-    response = await handleTrivia(interaction, event, answer)
-    await interaction.response.send_message(response, ephemeral=True)
-
-
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')
 async def attendance(interaction: discord.Interaction, event: str):
     await interaction.response.send_message(f"You've selected the attendance slash command", ephemeral=True)
