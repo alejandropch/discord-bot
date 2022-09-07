@@ -55,8 +55,8 @@ class aclient(discord.Client):
         else:
             winner.nextQuestion()
 
-        # TODO: adding a condition when sending the user form
-        await dmUser(user)
+        # TODO: adding a condition when sending a message
+        await winner.dmUser()
 
 
 client = aclient()
@@ -72,13 +72,7 @@ async def register(interaction: discord.Interaction, season: str):
     if isRegistered is True:
         await interaction.response.send_message(f"Hey {interaction.user.name}, seems that we tried to register you again. Buy you're already on our database!. Sorry ☹️", ephemeral=True)
         return
-
-    # filling the remaining data from discord that must be sent to the CE admin
-    winner.setRemanaingData(interaction, season)
-    user = await client.fetch_user(str(interaction.user.id))
-    await interaction.response.send_message(f"Thanks for registering - I sent you a direct message, please check settings if you did not receive it.", ephemeral=True)
-
-    await dmUser(user)
+    await winner.dmUser()
 
 
 @ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
