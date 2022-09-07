@@ -15,7 +15,6 @@ from interactions.register import handle as handleRegister
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
 from interactions.leaderboard import handle as handleLeaderboard
-from utils.formErrorHandler import formErrorHandler
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
@@ -47,7 +46,7 @@ class aclient(discord.Client):
         if message.author == self.user:
             return
 
-        [isValid, errMessage] = formErrorHandler(message.content)
+        [isValid, errMessage] = winner.errorHandler(message.content, True)
         user = await client.fetch_user(message.author.id)
 
         if isValid == False:
