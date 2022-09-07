@@ -3,9 +3,10 @@ from utils.FormManager import FormManager
 from utils.YorNButtons import YorNButtons
 
 
-class User:
+class User(FormManager):
 
-    def __init__(self):
+    def __init__(self, client):
+        super().__init__(client)
         self.name = ''
         self.lastName = ''
         self.address1 = ''
