@@ -21,11 +21,11 @@ class User(FormManager):
         self.isWinner = False
 
     async def setRemanaingData(self, interaction: discord.Interaction, season: str):
-        """ this function does fill the remaining data from discord that must be sent to the CE admin"""
+        """ this function sets the remaining data from discord that must be sent to the CE admin"""
 
         self.isWinner = True
 
-        # this will return an array, thats way is stored in an aux variable
+        # this will return an array, that way is stored in an aux variable
         aux = interaction.user.name + \
             '#' + interaction.user.discriminator,
         self.discordUsername = aux[0]
