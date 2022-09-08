@@ -62,7 +62,6 @@ class aclient(discord.Client):
         else:
             winner.nextQuestion()
 
-        # TODO: adding a condition when sending a message
         await winner.dmUser()
 
 
