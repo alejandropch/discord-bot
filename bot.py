@@ -51,6 +51,8 @@ class aclient(discord.Client):
 
         if message.author == self.user:
             return
+        if winner.isWinner == False:
+            return
 
         [isValid, errMessage] = winner.errorHandler(message.content, True)
         user = await client.fetch_user(message.author.id)
