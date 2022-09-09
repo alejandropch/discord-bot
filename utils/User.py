@@ -50,4 +50,5 @@ class User(FormManager):
     def clear(self):
         """ restart the iterator and the attributes of the winner user """
         self.response.clear()
+        self.nQuestions=len(self.questions)
         self.i = 0
