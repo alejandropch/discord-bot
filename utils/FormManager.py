@@ -50,14 +50,18 @@ class FormManager:
 
     async def printResult(self, user):
         """ print all the information the user has given"""
-        await self.userObject.send(
-            f"```👤 Name: {user.name}\n👥 Lastname: {user.lastName}\n🏠 Address: {user.address1}\n🏠 Second Address(Optional): {user.address2}\n🏙️ City: {user.city}\n🗺️ State/Province: {user.state}\n📮 Postal: {user.postalCode}\n🌎 Country: {user.country}```"
-        )
+        output = '```'
+        for i in range(self.nQuestions):
+            output = output + \
+                f"🔻 {user.questions[i]} \n🔸\t{user.response[i]}\n"
+
+        output = output+"```"
+        await self.userObj.send(output)
 
     async def formOver(self, user, view):
         """ this will call the printResult function and it will send a message to the user to confirm if everything is ok or not """
         await self.printResult(user)
-        await self.userObject.send('Does this look correct?\nClick **\"Yes\"** to submit \nClick **\"No\"** for start over', view=view)
+        await self.userObj.send('Does this look correct?\nClick **\"Yes\"** to submit \nClick **\"No\"** for start over', view=view)
 
     def errorHandler(self, message, getMsg=False):
         err = None
