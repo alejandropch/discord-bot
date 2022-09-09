@@ -5,11 +5,18 @@ from dotenv import load_dotenv
 import json
 
 
-async def handle(discord_id):
+async def handle(discord_id, season:str):
     """ It will return None if the user does not exists in the db """
-    value = requests.get(os.environ["API_URL"] + f'/participants/{discord_id}', headers={
+    data={
+        "season":season,
+        "member":{
+            "discord_id":discord_id
+        }
+    }
+    value = requests.post(os.environ["API_URL"] + f'/participants/check', data=json.dumps(data), headers={
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + os.environ["API_KEY"]
     })
-    res = json.loads(value.text)['data']
+
+    res = json.loads(value.text)
     return res
