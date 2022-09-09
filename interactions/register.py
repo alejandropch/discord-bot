@@ -11,8 +11,7 @@ async def handle(interaction: discord.Interaction, season: str, winner: User):
         fields = getFields(season)
         if fields["status"] == "error":
             raise NameError(fields["message"])
-
-        await winner.setRemanaingData(interaction, fields['data'])
+        await winner.setRemanaingData(interaction, season, fields['data'])
         return [f"Thanks for registering - I sent you a direct message, please check settings if you did not receive it.", False]
 
     return [f"Hey {interaction.user.name}, seems that we tried to register you again. Buy you're already on our database!. Sorry ☹️", True]
