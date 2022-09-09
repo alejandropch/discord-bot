@@ -16,7 +16,7 @@ class FormManager:
 
     async def handleRequest(self, user):
         
-        answers =joinAnswers(self)
+        answers =joinAnswers(self) if user.nQuestions !=0 else [{'id':'',"answer":[]}]
 
         data = {
             "season": user.season,
