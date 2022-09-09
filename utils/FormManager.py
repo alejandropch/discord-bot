@@ -21,18 +21,9 @@ class FormManager:
         data = {
             "season": user.season,
             "member": {
-                "name": user.name,
-                "lastname": user.lastName,
-                "address_1": user.address1,
-                "address_2": user.address2,
-                "city": user.city,
-                "state": user.state,
-                "postal_code": user.postalCode,
-                "country": user.country,
-                "discord_id": user.discord_id,
-                "discord_username": user.discordUsername,
+                "id": user.discord_id,
+                "username": user.username,
                 "avatar_url": user.avatar_url,
-                "winner": user.isWinner
             },
             "answers": answers
         }
