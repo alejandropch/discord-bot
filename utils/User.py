@@ -13,7 +13,7 @@ class User(FormManager):
         self.discord_id = ''
         self.username = ''
 
-    async def setRemanaingData(self, interaction: discord.Interaction, fields):
+    async def setRemanaingData(self, interaction: discord.Interaction, season: str, fields):
         """ this function sets the remaining data from discord and the CE Admin """
 
         self.isWinner = True
