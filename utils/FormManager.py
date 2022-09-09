@@ -7,9 +7,11 @@ import re
 class FormManager:
     def __init__(self, client):
         self.client = client
-        self.userObject = None
+        self.userObj = None
         # "i" attribute is an iterable for the winner form, open to sugestions
         self.i = 0
+        self.nQuestions = 0
+        self.questions = []
 
     async def handleRequest(self, user):
         data = {
