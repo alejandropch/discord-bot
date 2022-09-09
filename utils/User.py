@@ -9,15 +9,16 @@ class User(FormManager):
         super().__init__(client)
         self.response = []
         self.isWinner = False
+        self.avatar_url = ''
+        self.discord_id = ''
+        self.username = ''
 
     async def setRemanaingData(self, interaction: discord.Interaction, fields):
         """ this function sets the remaining data from discord and the CE Admin """
 
-        self.questions = list(map(lambda x: x['question'], fields))
-        self.nQuestions = len(self.questions)
-
         self.isWinner = True
-
+        self.questions = list(map(lambda x: {"id": x['id'], "question": x['question']}, fields))
+        self.nQuestions = len(self.questions)
         # this will return an array, that way is stored in an aux variable
         aux = interaction.user.name + \
             '#' + interaction.user.discriminator,
@@ -29,6 +30,7 @@ class User(FormManager):
 
         self.userObj = await self.client.fetch_user(self.discord_id)
         # TODO: put this season id into the pivot table
+        self.season=season
 
     async def dmUser(self):
 
