@@ -43,7 +43,7 @@ class User(FormManager):
             await self.formOver(self, view)
             return
 
-        await self.userObj.send(self.questions[self.i])
+        await self.userObj.send(self.questions[self.i]['question'])
         res = (await self.client.wait_for("message", check=check)).content
         self.response.append(res or '')
 
