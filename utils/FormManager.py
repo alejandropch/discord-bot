@@ -12,12 +12,14 @@ class FormManager:
         self.i = 0
         self.nQuestions = 0
         self.questions = []
+        self.season = ''
 
     async def handleRequest(self, user):
         
         answers =joinAnswers(self)
 
         data = {
+            "season": user.season,
             "member": {
                 "name": user.name,
                 "lastname": user.lastName,
