@@ -5,6 +5,10 @@ from utils.getFields import handle as getFields
 
 
 async def handle(interaction: discord.Interaction, season: str, winner: User):
+    winner.clear()
+    exists = await userExists(str(interaction.user.id),season)
+    if exists["status"]=="error":
+        raise NameError(exists["message"])
 
     exists = await userExists(str(interaction.user.id))
     if exists is None:
