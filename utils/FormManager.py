@@ -2,7 +2,7 @@ import requests
 import os
 import json
 import re
-
+from utils.joinAnswers import joinAnswers
 
 class FormManager:
     def __init__(self, client):
@@ -14,6 +14,9 @@ class FormManager:
         self.questions = []
 
     async def handleRequest(self, user):
+        
+        answers =joinAnswers(self)
+
         data = {
             "member": {
                 "name": user.name,
@@ -29,6 +32,7 @@ class FormManager:
                 "avatar_url": user.avatar_url,
                 "winner": user.isWinner
             },
+            "answers": answers
         }
 
         value = requests.post(os.environ["API_URL"] + '/participants/', data=json.dumps(data), headers={
