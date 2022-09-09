@@ -73,11 +73,14 @@ tree = app_commands.CommandTree(client)
 
 @ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
 async def register(interaction: discord.Interaction, season: str):
-    [response, isRegistered] = await handleRegister(interaction, season, winner)
-    await interaction.response.send_message(response, ephemeral=True)
-    if isRegistered is True:
-        return
-    await winner.dmUser()
+    try:
+        [response, isRegistered] = await handleRegister(interaction, season, winner)
+        await interaction.response.send_message(response, ephemeral=True)
+        if isRegistered is True:
+            return
+        await winner.dmUser()
+    except NameError as err:
+        await interaction.response.send_message(err, ephemeral=True)
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')
