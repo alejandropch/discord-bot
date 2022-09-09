@@ -30,7 +30,9 @@ class YorNButtons(discord.ui.View):
         if self.value == None:
             try:
                 await self.winner.handleRequest(self.winner)
+
                 await interaction.response.send_message(content="Form sent successfully!")
+                self.winner.clear()
                 self.value = True
             except:
                 await interaction.response.send_message(content='Something has broken, we are fixing it!')
