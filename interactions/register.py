@@ -1,6 +1,7 @@
 import discord
 from utils.userExists import handle as userExists
 from utils.User import User
+from utils.getFields import handle as getFields
 
 
 async def handle(interaction: discord.Interaction, season: str, winner: User):
