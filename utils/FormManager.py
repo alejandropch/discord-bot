@@ -27,8 +27,8 @@ class FormManager:
             },
             "answers": answers
         }
-
-        value = requests.post(os.environ["API_URL"] + '/participants/', data=json.dumps(data), headers={
+        
+        value = requests.post(os.environ["API_URL"] + '/season/register', data=json.dumps(data), headers={
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
@@ -50,7 +50,7 @@ class FormManager:
         output = '```'
         for i in range(self.nQuestions):
             output = output + \
-                f"🔻 {user.questions[i]} \n🔸\t{user.response[i]}\n"
+                f"🔻 {user.questions[i]['question']} \n🔸\t{user.response[i]}\n"
 
         output = output+"```"
         await self.userObj.send(output)
