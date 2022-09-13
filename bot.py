@@ -26,15 +26,6 @@ load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
 
 
-class Buttons(discord.ui.View):
-    def __init__(self, *, timeout=180):
-        super().__init__(timeout=timeout)
-
-    @discord.ui.button(label="Click me!", style=discord.ButtonStyle.red)
-    async def blue_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await interaction.response.edit_message(content=f"You clicked the button!!")
-
-
 class aclient(discord.Client):
     def __init__(self):
         super().__init__(intents=discord.Intents.default())
@@ -97,10 +88,15 @@ async def random(interaction: discord.Interaction, event: str):
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
 async def trivia(interaction: discord.Interaction, event: str):
     response = await getEvent(event)
-    if response['multiple']:
-        await interaction.response.send_message(response['question'], view=Buttons(options=response['options'], event=event, question=response['question']), ephemeral=True)
+    print(response)
+    if response['status'] == 'success':
+        if response['data']['multiple']:
+            await interaction.response.send_message(response['data']['question'], view=Buttons(options=response['data']['options'], event=event, question=response['data']['question']), ephemeral=True)
+        else:
+            await interaction.response.send_modal(TriviaModal(title=response['data']['question'], event=event))
     else:
-        await interaction.response.send_modal(TriviaModal(title=response['question'], event=event))
+        await interaction.response.send_message(response['message'], ephemeral=True)
+
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
