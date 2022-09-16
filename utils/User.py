@@ -60,3 +60,7 @@ class User(FormManager):
         self.response.clear()
         self.nQuestions=len(self.questions)
         self.i = 0
+
+    def saveResponse(self,res):
+        """ save the user's response """
+        self.response.append(res or '')
