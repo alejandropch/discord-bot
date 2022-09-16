@@ -7,7 +7,7 @@ from utils.joinAnswers import joinAnswers
 class FormManager:
     def __init__(self, client):
         self.client = client
-        self.userObj = None
+        self.user = None
         # "i" attribute is an iterable for the winner form, open to sugestions
         self.i = 0
         self.nQuestions = 0
@@ -45,20 +45,20 @@ class FormManager:
         """ this function will sum the i atribute plus one (like i++) """
         self.i += 1
 
-    async def printResult(self, user):
+    async def printResult(self, winner):
         """ print all the information the user has given"""
         output = '```'
         for i in range(self.nQuestions):
             output = output + \
-                f"🔻 {user.questions[i]['question']} \n🔸\t{user.response[i]}\n"
+                f"🔻 {winner.questions[i]['question']} \n🔸\t{winner.response[i]}\n"
 
         output = output+"```"
-        await self.userObj.send(output)
+        await self.user.send(output)
 
-    async def formOver(self, user, view):
+    async def formOver(self, winner, view):
         """ this will call the printResult function and it will send a message to the user to confirm if everything is ok or not """
-        await self.printResult(user)
-        await self.userObj.send('Does this look correct?\nClick **\"Yes\"** to submit \nClick **\"No\"** for start over', view=view)
+        await self.printResult(winner)
+        await self.user.send('Does this look correct?\nClick **\"Yes\"** to submit \nClick **\"No\"** for start over', view=view)
 
     def errorHandler(self, message, getMsg=False):
         err = None
