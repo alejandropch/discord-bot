@@ -11,28 +11,28 @@ from discord import app_commands
 
 
 class YorNButtons(discord.ui.View):
-    def __init__(self, winner, timeout=None):
+    def __init__(self, participant, timeout=None):
         """
         Parameters
         ----------
-        winner : object
+        participant : object
             the User object
         timeout : int, optional
             set the timeout for these buttons
         """
         super().__init__(timeout=timeout)
         self.value = None
-        self.winner = winner
+        self.participant = participant
 
     @discord.ui.button(label="Yes", style=discord.ButtonStyle.green, custom_id="yes")
     async def yes_button(self, interaction: discord.Interaction, button: discord.ui.Button):
 
         if self.value == None:
             try:
-                await self.winner.handleRequest(self.winner)
+                await self.participant.handleRequest(self.participant)
 
                 await interaction.response.send_message(content="Form sent successfully!")
-                self.winner.clear()
+                self.participant.clear()
                 self.value = True
             except:
                 await interaction.response.send_message(content='Something has broken, we are fixing it!')
@@ -47,9 +47,9 @@ class YorNButtons(discord.ui.View):
 
         if self.value == None:
             await interaction.response.send_message(content=f"let's start again")
-            self.winner.clear()
+            self.participant.clear()
             self.value = False
-            return await self.winner.dmUser()
+            return await self.participant.dmUser()
         else:
             await interaction.response.edit_message(content=f"You already clicked this button!!")
         return

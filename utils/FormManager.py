@@ -8,7 +8,7 @@ class FormManager:
     def __init__(self, client):
         self.client = client
         self.user = None
-        # "i" attribute is an iterable for the winner form, open to sugestions
+        # "i" attribute is an iterable for the participant form, open to sugestions
         self.i = 0
         self.nQuestions = 0
         self.questions = []
@@ -45,19 +45,19 @@ class FormManager:
         """ this function will sum the i atribute plus one (like i++) """
         self.i += 1
 
-    async def printResult(self, winner):
+    async def printResult(self, participant):
         """ print all the information the user has given"""
         output = '```'
         for i in range(self.nQuestions):
             output = output + \
-                f"🔻 {winner.questions[i]['question']} \n🔸\t{winner.response[i]}\n"
+                f"🔻 {participant.questions[i]['question']} \n🔸\t{participant.response[i]}\n"
 
         output = output+"```"
         await self.user.send(output)
 
-    async def formOver(self, winner, view):
+    async def formOver(self, participant, view):
         """ this will call the printResult function and it will send a message to the user to confirm if everything is ok or not """
-        await self.printResult(winner)
+        await self.printResult(participant)
         await self.user.send('Does this look correct?\nClick **\"Yes\"** to submit \nClick **\"No\"** for start over', view=view)
 
     def errorHandler(self, message, getMsg=False):
