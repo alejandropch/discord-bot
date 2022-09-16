@@ -30,22 +30,30 @@ class User(FormManager):
 
     async def dmUser(self):
 
-        def check(message):
-            # if the bot respond a question for the user, it should be consider an error. Hence, if the one responding the message is not the winner user, it should be an error, open to suggestions
-            # if message.author != self.discordUsername:
-            #    return False
+        # after the register command is sended....,
+        # this should be a while loop
 
-            response = self.errorHandler(message.content)
-            return False if response is False else True
-        # if the iterator have the same value of the total n° of questions
-        if self.i >= self.nQuestions:
-            view = YorNButtons(self)
-            await self.formOver(self, view)
-            return
+        while self.i < self.nQuestions:
+            #def check(message):
+                # if the bot respond a question for the user, it should be consider an error. Hence, if the one responding the message is not the winner user, it should be an error, open to suggestions
+                # if message.author != self.discordUsername:
+                #    return False
 
-        await self.userObj.send(self.questions[self.i]['question'])
-        res = (await self.client.wait_for("message", check=check)).content
-        self.response.append(res or '')
+            await self.user.send(self.questions[self.i]['question'])
+            res = (await self.client.wait_for("message")).content
+            [isValid, errMessage] = self.errorHandler(res, True)
+            if isValid == False:
+                await self.user.send(f"Value provided is invalid. {errMessage}")
+            else:
+                self.nextQuestion()
+                self.saveResponse(res)
+
+
+        # end of while loop, if the iterator is equal or greater thant the value of total n° of questions
+        view = YorNButtons(self)
+        await self.formOver(self, view)
+        return
+
 
     def clear(self):
         """ restart the iterator and the attributes of the winner user """
