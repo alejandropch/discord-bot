@@ -39,31 +39,18 @@ class aclient(discord.Client):
         print(f"We have logged in as {self.user}.")
 
     async def on_message(self, message):
-
         if message.author == self.user:
             return
-        if winner.isWinner == False:
-            return
-
-        [isValid, errMessage] = winner.errorHandler(message.content, True)
-        user = await client.fetch_user(message.author.id)
-
-        if isValid == False:
-            await user.send(f"Value provided is invalid. {errMessage}")
-        else:
-            winner.nextQuestion()
-
-        await winner.dmUser()
 
 
 client = aclient()
-winner = User(client)
-
 tree = app_commands.CommandTree(client)
 
 
 @ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
 async def register(interaction: discord.Interaction, season: str):
+    winner = User(client)
+
     try:
         [response, isRegistered] = await handleRegister(interaction, season, winner)
         await interaction.response.send_message(response, ephemeral=True)
