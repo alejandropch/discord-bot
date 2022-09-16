@@ -8,7 +8,7 @@ class User(FormManager):
     def __init__(self, client):
         super().__init__(client)
         self.response = []
-        self.isWinner = False
+        self.isRegistered = False
         self.avatar_url = ''
         self.discord_id = ''
         self.username = ''
@@ -17,7 +17,7 @@ class User(FormManager):
         """ this function sets the remaining data from discord and the CE Admin """
 
         # this will return only the questions inside the question object and store it in a list
-        self.isWinner = True
+        self.isRegistered = True
         self.questions = list(map(lambda x: {"id": x['id'], "question": x['question']}, fields))
         self.nQuestions = len(self.questions)
         # this will return an array, that way is stored in an aux variable
@@ -35,7 +35,7 @@ class User(FormManager):
 
         while self.i < self.nQuestions:
             #def check(message):
-                # if the bot respond a question for the user, it should be consider an error. Hence, if the one responding the message is not the winner user, it should be an error, open to suggestions
+                # if the bot respond a question for the user, it should be consider an error. Hence, if the one responding the message is not the user per se, it should be an error, open to suggestions
                 # if message.author != self.discordUsername:
                 #    return False
 
@@ -56,7 +56,7 @@ class User(FormManager):
 
 
     def clear(self):
-        """ restart the iterator and the attributes of the winner user """
+        """ restart the iterator and the attributes of the participant """
         self.response.clear()
         self.nQuestions=len(self.questions)
         self.i = 0
