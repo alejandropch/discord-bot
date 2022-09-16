@@ -25,7 +25,7 @@ class User(FormManager):
         self.username = aux[0]
         self.avatar_url = str(interaction.user.avatar.url if interaction.user.avatar is not None else '')
         self.discord_id = str(interaction.user.id)
-        self.userObj = await self.client.fetch_user(self.discord_id)
+        self.user = await self.client.fetch_user(self.discord_id)
         self.season=season
 
     async def dmUser(self):
