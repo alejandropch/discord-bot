@@ -27,4 +27,4 @@ async def getEvent(event: str):
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
 
-    return x.json()['data']
+    return x.json()

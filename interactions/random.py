@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import json
 import os
 
+
 async def handle(interaction: discord.Interaction, event: str):
     data = {
         "member": {
@@ -14,10 +15,9 @@ async def handle(interaction: discord.Interaction, event: str):
         "event_code": event,
     }
 
-    x = requests.post(os.environ["API_URL"] + '/interactions/random', data = json.dumps(data), headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + os.environ["API_KEY"]
-        })
-        
-    return x.json()['message']
+    x = requests.post(os.environ["API_URL"] + '/interactions/random', data=json.dumps(data), headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + os.environ["API_KEY"]
+    })
 
+    return x.json()['message']
