@@ -34,13 +34,17 @@ class User(FormManager):
         # this should be a while loop
 
         while self.i < self.nQuestions:
-            #def check(message):
-                # if the bot respond a question for the user, it should be consider an error. Hence, if the one responding the message is not the user per se, it should be an error, open to suggestions
-                # if message.author != self.discordUsername:
-                #    return False
+            def check(message):
+                # if the bot respond a question for the user, it should be consider an error. 
+                # Hence, if the one responding the message is not the user per se, it should be an error, open to suggestions
+                if message.author != self.username:
+                    return True
+                return False
 
             await self.user.send(self.questions[self.i]['question'])
-            res = (await self.client.wait_for("message")).content
+            res = (await self.client.wait_for("message", check=check)).content
+            print(res)
+
             [isValid, errMessage] = self.errorHandler(res, True)
             if isValid == False:
                 await self.user.send(f"Value provided is invalid. {errMessage}")
