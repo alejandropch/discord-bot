@@ -18,6 +18,7 @@ class User(FormManager):
 
         # this will return only the questions inside the question object and store it in a list
         self.isRegistered = True
+        # this line should return a list of questions that 'fields' variable have in it
         self.questions = list(map(lambda x: {"id": x['id'], "question": x['question']}, fields))
         self.nQuestions = len(self.questions)
         # this will return an array, that way is stored in an aux variable
