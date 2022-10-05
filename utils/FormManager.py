@@ -1,7 +1,6 @@
 import requests
 import os
 import json
-import re
 from utils.joinAnswers import joinAnswers
 
 class FormManager:
@@ -42,10 +41,6 @@ class FormManager:
 
         return "Something went wrong!"
 
-    def nextQuestion(self):
-        """ this function will sum the i atribute plus one (like i++) """
-        self.i += 1
-
     def getOutputResult(self,participant):
         """ print all the information the user has given"""
         output = ''
@@ -55,34 +50,3 @@ class FormManager:
 
         return output
 
-    async def printResult(self, participant):
-        """ print all the information the user has given"""
-        output = '```'
-        for i in range(self.nQuestions):
-            output = output + \
-                f"🔻 {participant.questions[i]['question']} \n🔸\t{participant.response[i]}\n"
-
-        output = output+"```"
-        await self.user.send(output)
-
-    async def formOver(self, participant, view):
-        """ this will call the printResult function and it will send a message to the user to confirm if everything is ok or not """
-        await self.printResult(participant)
-        await self.user.send('Does this look correct?\nClick **\"Yes\"** to submit \nClick **\"No\"** for start over', view=view)
-
-    def errorHandler(self, message, getMsg=False):
-        err = None
-        if len(message) > 255:
-            err = "Please do not use more than 255 characters"
-        if re.match("^[-\w\s.,']*$", message) is None:
-            err = "Please do not use special characters"
-        if err is None:
-            if getMsg is True:
-                return [True, '']
-            else:
-                return True
-        else:
-            if getMsg is True:
-                return [False, err]
-            else:
-                return False
