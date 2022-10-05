@@ -58,7 +58,7 @@ async def register(interaction: discord.Interaction, season: str):
         if isRegistered is True:
             return
         
-        await interaction.response.send_modal(RegisterModal(season=season,participant=participant))
+        await interaction.response.send_modal(RegisterModal(participant=participant))
 
     except NameError as err:
         await interaction.response.send_message(err, ephemeral=True)
