@@ -36,14 +36,24 @@ class FormManager:
         try:
             value = value.json()
             print(value)
+            return "Form sent successfully!"
         except json.decoder.JSONDecodeError:
             print("json empty")
 
-        return
+        return "Something went wrong!"
 
     def nextQuestion(self):
         """ this function will sum the i atribute plus one (like i++) """
         self.i += 1
+
+    def getOutputResult(self,participant):
+        """ print all the information the user has given"""
+        output = ''
+        for i in range(self.nQuestions):
+            output = output + \
+                f"**🔻 {participant.questions[i]['question']}** \n 🔸\t{participant.response[i]}\n"
+
+        return output
 
     async def printResult(self, participant):
         """ print all the information the user has given"""

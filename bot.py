@@ -17,6 +17,7 @@ from interactions.random import handle as handleRandom
 from interactions.leaderboard import handle as handleLeaderboard
 from interactions.mult import handle as handleMult
 from interactions.mult import getEvent
+from views.RegisterModal import RegisterModal
 # views
 from views.views import Buttons
 from views.modal import TriviaModal
@@ -53,12 +54,15 @@ async def register(interaction: discord.Interaction, season: str):
 
     try:
         [response, isRegistered] = await handleRegister(interaction, season, participant)
-        await interaction.response.send_message(response, ephemeral=True)
+        """ await interaction.response.send_message(response, ephemeral=True) """
         if isRegistered is True:
             return
-        await participant.dmUser()
+        
+        await interaction.response.send_modal(RegisterModal(season=season,participant=participant))
+
     except NameError as err:
         await interaction.response.send_message(err, ephemeral=True)
+        return
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')

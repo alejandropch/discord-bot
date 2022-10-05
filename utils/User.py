@@ -1,5 +1,6 @@
 import discord
 from utils.FormManager import FormManager
+from views.RegisterModal import RegisterModal
 from views.YorNButtons import YorNButtons
 
 
@@ -18,6 +19,7 @@ class User(FormManager):
 
         # this will return only the questions inside the question object and store it in a list
         self.isRegistered = True
+        # this line should return a list of questions that 'fields' variable have in it
         self.questions = list(map(lambda x: {"id": x['id'], "question": x['question']}, fields))
         self.nQuestions = len(self.questions)
         # this will return an array, that way is stored in an aux variable
@@ -28,27 +30,24 @@ class User(FormManager):
         self.user = await self.client.fetch_user(self.discord_id)
         self.season=season
 
-    async def dmUser(self):
-
-        # after the register command is sended....,
-        # this should be a while loop
+    async def dmUser(self, dm = True):
 
         while self.i < self.nQuestions:
-            #def check(message):
-                # if the bot respond a question for the user, it should be consider an error. Hence, if the one responding the message is not the user per se, it should be an error, open to suggestions
-                # if message.author != self.discordUsername:
-                #    return False
-
+            def check(message):
+                # if the bot respond a question for the user, it should be consider an error. 
+                # Hence, if the one responding the message is not the user per se, it should be an error, open to suggestions
+                if message.author != self.username :
+                    return True
+                return False
+            
             await self.user.send(self.questions[self.i]['question'])
-            res = (await self.client.wait_for("message")).content
-            [isValid, errMessage] = self.errorHandler(res, True)
+            RES = (await self.client.wait_for("message", check=check)).content        
+            [isValid, errMessage] = self.errorHandler(RES, True)
             if isValid == False:
                 await self.user.send(f"Value provided is invalid. {errMessage}")
             else:
                 self.nextQuestion()
-                self.saveResponse(res)
-
-
+                self.saveResponse(RES)
         # end of while loop, if the iterator is equal or greater thant the value of total n° of questions
         view = YorNButtons(self)
         await self.formOver(self, view)
