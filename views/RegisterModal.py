@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 
 class RegisterModal(discord.ui.Modal):
-    def __init__(self,title = 'Registration Proccess!', season = '',participant=object):
+    def __init__(self,title = 'Registration Proccess!', participant=object):
         super().__init__(title = title)
         self.participant=participant
         self.start()
