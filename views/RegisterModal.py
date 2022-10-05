@@ -1,16 +1,10 @@
 import discord
-import requests
-from dotenv import load_dotenv
-import os
 from discord.ext import commands
 from discord import app_commands
-from interactions.trivia import handle as handleTrivia
-
 
 class RegisterModal(discord.ui.Modal):
     def __init__(self,title = 'Registration Proccess!', season = '',participant=object):
         super().__init__(title = title)
-        self.season = season
         self.participant=participant
         self.start()
     
