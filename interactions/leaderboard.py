@@ -19,5 +19,6 @@ async def handle(interaction: discord.Interaction, season: str):
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
         
+    print(x.json())
     return x.json()['message']
 

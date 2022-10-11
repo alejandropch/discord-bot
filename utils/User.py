@@ -24,7 +24,7 @@ class User(FormManager):
         # this will return an array, that way is stored in an aux variable
         aux = interaction.user.name + '#' + interaction.user.discriminator,
         self.username = aux[0]
-        self.avatar_url = str(interaction.user.avatar.url if interaction.user.avatar is not None else '')
+        self.avatar_url = str(interaction.user.avatar.url if interaction.user.avatar is not None else 'https://cdn.discordapp.com/embed/avatars/0.png')
         self.discord_id = str(interaction.user.id)
         self.user = await self.client.fetch_user(self.discord_id)
         self.season=season

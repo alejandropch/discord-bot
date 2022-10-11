@@ -79,7 +79,7 @@ async def random(interaction: discord.Interaction, event: str):
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
 async def trivia(interaction: discord.Interaction, event: str):
     response = await getEvent(event)
-    print(response)
+    #print(response)
     if response['status'] == 'success':
         if response['data']['multiple']:
             await interaction.response.send_message(response['data']['question'], view=Buttons(options=response['data']['options'], event=event, question=response['data']['question']), ephemeral=True)

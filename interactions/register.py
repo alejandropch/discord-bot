@@ -15,7 +15,7 @@ async def handle(interaction: discord.Interaction, season: str, participant: Use
     fields = getFields(season)
     if fields["status"] == "error":
         raise NameError(fields["message"])
-    await participant.setRemanaingData(interaction, season, fields['data'])
+    await participant.setRemanaingData(interaction, season, fields['data']) 
     if participant.nQuestions == 0:    
         try:
             await participant.handleRequest(participant)
