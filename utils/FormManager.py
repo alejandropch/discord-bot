@@ -16,16 +16,26 @@ class FormManager:
     async def handleRequest(self, user):
         
         answers =joinAnswers(self) if user.nQuestions !=0 else [{'id':'',"answer":[]}]
-
-        data = {
-            "season": user.season,
-            "member": {
-                "id": user.discord_id,
-                "username": user.username,
-                "avatar_url": user.avatar_url,
-            },
-            "answers": answers
-        }
+        data = ''
+        if user.avatar_url == '':
+            data = {
+                "season": user.season,
+                "member": {
+                    "id": user.discord_id,
+                    "username": user.username,
+                },
+                "answers": answers
+            }
+        else:
+            data = {
+                "season": user.season,
+                "member": {
+                    "id": user.discord_id,
+                    "username": user.username,
+                    "avatar_url": user.avatar_url,
+                },
+                "answers": answers
+            }
         
         value = requests.post(os.environ["API_URL"] + '/season/register', data=json.dumps(data), headers={
             'Content-Type': 'application/json',
