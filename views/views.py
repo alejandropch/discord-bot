@@ -6,6 +6,7 @@ import os
 from discord.ext import commands
 from discord import app_commands
 from interactions.trivia import handle as handleTrivia
+from interactions.leaderboard import handle as handleLeaderboard
 
 class Buttons(discord.ui.View):
     def __init__(self, options = [], event = '', question = ''):
@@ -57,8 +58,8 @@ class SeasonButtons(discord.ui.View):
     def generate_callback(self, option: str):
         
         async def validate_button(interaction: discord.Interaction):
-                #response = await handleTrivia(interaction, self.event, option)
-                embed = discord.Embed(title = option['name'], description = f"leaderboard")
+                response = await handleLeaderboard(interaction, option['id'])
+                embed = discord.Embed(title = option['name'], description = response['message'])
                 embed.set_author(name = interaction.user, icon_url = interaction.user.avatar)
                 await interaction.response.edit_message(embed = embed, content = None, view = None)
         
