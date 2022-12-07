@@ -15,11 +15,13 @@ from interactions.register import handle as handleRegister
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
 from interactions.leaderboard import handle as handleLeaderboard
+from interactions.leaderboard import getSeasons
 from interactions.mult import handle as handleMult
 from interactions.mult import getEvent
 from views.RegisterModal import RegisterModal
 # views
 from views.views import Buttons
+from views.views import SeasonButtons
 from views.modal import TriviaModal
 
 
@@ -91,8 +93,12 @@ async def trivia(interaction: discord.Interaction, event: str):
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
-async def leaderboard(interaction: discord.Interaction, season: str):
-    response = await handleLeaderboard(interaction, season)
-    await interaction.response.send_message(response, ephemeral=True)
+async def leaderboard(interaction: discord.Interaction):
+    response = await getSeasons()
+    if response['status'] == 'success':
+        await interaction.response.send_message(response['data']['question'], view=SeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
+    else:
+        await interaction.response.send_message(response['message'], ephemeral=True)
+
 
 client.run(bot_token)

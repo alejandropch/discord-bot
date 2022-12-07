@@ -22,3 +22,10 @@ async def handle(interaction: discord.Interaction, season: str):
     print(x.json())
     return x.json()['message']
 
+async def getSeasons():
+    x = requests.get(os.environ["API_URL"] + '/options/leaderboard', headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + os.environ["API_KEY"]
+        })
+
+    return x.json()
