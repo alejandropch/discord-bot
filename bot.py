@@ -8,7 +8,7 @@ from discord.ext import commands
 from discord import app_commands
 
 from utils.User import User
-from utils.getSeasons import handle as getSeasons
+from utils.seasons import getSeasons
 
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 

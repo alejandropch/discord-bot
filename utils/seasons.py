@@ -3,7 +3,7 @@ import json
 import os
 
 
-async def handle(discord_id:str=None):
+async def getSeasons(discord_id:str=None):
     
     route=f'/options/seasons/{discord_id}' if discord_id != None else '/options/seasons'
     
