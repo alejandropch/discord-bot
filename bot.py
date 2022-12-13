@@ -8,20 +8,23 @@ from discord.ext import commands
 from discord import app_commands
 
 from utils.User import User
+from utils.getSeasons import handle as getSeasons
 
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
-from interactions.register import handle as handleRegister
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
 from interactions.leaderboard import handle as handleLeaderboard
-from interactions.leaderboard import getSeasons
+#from interactions.leaderboard import getSeasons
 from interactions.mult import handle as handleMult
 from interactions.mult import getEvent
+from interactions.register import handle as handleRegister
 from views.RegisterModal import RegisterModal
 # views
 from views.views import Buttons
 from views.views import SeasonButtons
+from views.views import RegisterButtons
+
 from views.modal import TriviaModal
 
 
