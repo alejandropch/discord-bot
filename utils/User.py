@@ -2,6 +2,13 @@ import discord
 from utils.FormManager import FormManager
 from views.RegisterModal import RegisterModal
 
+def getQuestionsList(fields):
+    """ this function creates a list with only 'id' and 'questions' attributes """
+    
+    questions = []
+    for x in fields:
+        questions.append({"id": x['id'], "question": x['question']})
+    return questions
 
 class User(FormManager):
 
@@ -13,13 +20,13 @@ class User(FormManager):
         self.discord_id = ''
         self.username = ''
 
-    async def setRemanaingData(self, interaction: discord.Interaction, season: str, fields):
+    async def setRemainingData(self, interaction: discord.Interaction, season: str=None, fields=None):
         """ this function sets the remaining data from discord and the CE Admin """
 
         # this will return only the questions inside the question object and store it in a list
         self.isRegistered = True
-        # this line should return a list of questions that 'fields' variable have in it
-        self.questions = list(map(lambda x: {"id": x['id'], "question": x['question']}, fields))
+        self.questions=getQuestionsList(fields)
+
         self.nQuestions = len(self.questions)
         # this will return an array, that way is stored in an aux variable
         aux = interaction.user.name + '#' + interaction.user.discriminator,
