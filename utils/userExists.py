@@ -6,7 +6,7 @@ import json
 
 
 async def handle(discord_id, season:str):
-    """ It will return None if the user does not exists in the db """
+    """ This function will return None if the user does not exists in the db """
     data={
         "season":season,
         "member":{
@@ -17,6 +17,8 @@ async def handle(discord_id, season:str):
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + os.environ["API_KEY"]
     })
-
+    # This line decodes the response from the request as JSON and assigns it to a variable
     res = json.loads(value.text)
+
+    # This line returns the JSON response
     return res
