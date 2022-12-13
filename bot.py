@@ -54,20 +54,26 @@ tree = app_commands.CommandTree(client)
 
 
 @ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
-async def register(interaction: discord.Interaction, season: str):
+async def register(interaction: discord.Interaction):
     participant = User(client)
+    response =  await getSeasons(str(interaction.user.id))
+    if response['status'] == 'success':
+        #if there is no seasons
+        if len(response['data']['options'])==0:
+            await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)    
+        #if there is one season
+        elif len(response['data']['options'])==1:
+            season_name = response['data']['options'][0]['name']
+            await handleRegister(interaction, season_name, participant)
+            await interaction.response.send_modal(RegisterModal(participant=participant,one_season=True))
+        else: 
+            #if there is more than one season
+            await interaction.response.send_message(response['data']['question'], view=RegisterButtons(options=response['data']['options'], question=response['data']['question'], participant=participant), ephemeral=True)
+            #await interaction.response.send_modal(RegisterModal(participant=participant))
+    else: 
+        await interaction.response.send_message(response['message'], ephemeral=True)
 
-    try:
-        [response, isRegistered] = await handleRegister(interaction, season, participant)
-        """ await interaction.response.send_message(response, ephemeral=True) """
-        if isRegistered is True:
-            return
-        
-        await interaction.response.send_modal(RegisterModal(participant=participant))
-
-    except NameError as err:
-        await interaction.response.send_message(err, ephemeral=True)
-        return
+    return
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')
