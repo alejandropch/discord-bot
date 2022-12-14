@@ -23,7 +23,7 @@ from views.RegisterModal import RegisterModal
 # views
 from views.views import Buttons
 from views.trivia import SeasonButtons as TriviaSeasonButtons
-from views.views import RegisterButtons
+from views.registration import RegisterButtons as RegisterSeasonButtons
 
 from views.modal import TriviaModal
 
@@ -68,12 +68,9 @@ async def register(interaction: discord.Interaction):
             await interaction.response.send_modal(RegisterModal(participant=participant,one_season=True))
         else: 
             #if there is more than one season
-            await interaction.response.send_message(response['data']['question'], view=RegisterButtons(options=response['data']['options'], question=response['data']['question'], participant=participant), ephemeral=True)
-            #await interaction.response.send_modal(RegisterModal(participant=participant))
+            await interaction.response.send_message(response['data']['question'], view=RegisterSeasonButtons(options=response['data']['options'], question=response['data']['question'], participant=participant), ephemeral=True)
     else: 
         await interaction.response.send_message(response['message'], ephemeral=True)
-
-    return
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')

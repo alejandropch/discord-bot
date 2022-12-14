@@ -9,6 +9,7 @@ from interactions.trivia import handle as handleTrivia
 from interactions.leaderboard import handle as handleLeaderboard
 from interactions.register import handle as handleRegister
 from utils.User import User
+from utils.seasons import getFields
 
 class Buttons(discord.ui.View):
     def __init__(self, options = [], event = '', question = ''):
@@ -61,7 +62,8 @@ class RegisterButtons(discord.ui.View):
     def generate_callback(self, option: str):
         
         async def validate_button(interaction: discord.Interaction):
-                await handleRegister(interaction, option['name'], self.participant)
+            response = await getFields(season_id=option['id'])
+            await interaction.response.send_modal(RegisterModal(participant=participant,one_season=True))
         
         return validate_button
 
