@@ -22,7 +22,7 @@ from interactions.register import handle as handleRegister
 from views.RegisterModal import RegisterModal
 # views
 from views.views import Buttons
-from views.views import SeasonButtons
+from views.trivia import SeasonButtons as TriviaSeasonButtons
 from views.views import RegisterButtons
 
 from views.modal import TriviaModal
@@ -53,10 +53,10 @@ client = aclient()
 tree = app_commands.CommandTree(client)
 
 
-@ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
+@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
 async def register(interaction: discord.Interaction):
     participant = User(client)
-    response =  await getSeasons(str(interaction.user.id))
+    response =  await getSeasons(discord_id=str(interaction.user.id), unregistered=True)
     if response['status'] == 'success':
         #if there is no seasons
         if len(response['data']['options'])==0:
@@ -88,16 +88,20 @@ async def random(interaction: discord.Interaction, event: str):
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
-async def trivia(interaction: discord.Interaction, event: str):
-    response = await getEvent(event)
-    #print(response)
+async def trivia(interaction: discord.Interaction):
+    response = await getSeasons(discord_id=str(interaction.user.id))
     if response['status'] == 'success':
-        if response['data']['multiple']:
-            await interaction.response.send_message(response['data']['question'], view=Buttons(options=response['data']['options'], event=event, question=response['data']['question']), ephemeral=True)
-        else:
-            await interaction.response.send_modal(TriviaModal(title=response['data']['question'], event=event))
+        await interaction.response.send_message(response['data']['question'], view=TriviaSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
     else:
         await interaction.response.send_message(response['message'], ephemeral=True)
+
+    # if response['status'] == 'success':
+    #     if response['data']['multiple']:
+    #         await interaction.response.send_message(response['data']['question'], view=Buttons(options=response['data']['options'], event=event, question=response['data']['question']), ephemeral=True)
+    #     else:
+    #         await interaction.response.send_modal(TriviaModal(title=response['data']['question'], event=event))
+    # else:
+    #     await interaction.response.send_message(response['message'], ephemeral=True)
 
 
 
