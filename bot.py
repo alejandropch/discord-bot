@@ -95,16 +95,6 @@ async def trivia(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(response['message'], ephemeral=True)
 
-    # if response['status'] == 'success':
-    #     if response['data']['multiple']:
-    #         await interaction.response.send_message(response['data']['question'], view=Buttons(options=response['data']['options'], event=event, question=response['data']['question']), ephemeral=True)
-    #     else:
-    #         await interaction.response.send_modal(TriviaModal(title=response['data']['question'], event=event))
-    # else:
-    #     await interaction.response.send_message(response['message'], ephemeral=True)
-
-
-
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
 async def leaderboard(interaction: discord.Interaction):
     response = await getSeasons()
