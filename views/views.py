@@ -7,6 +7,8 @@ from discord.ext import commands
 from discord import app_commands
 from interactions.trivia import handle as handleTrivia
 from interactions.leaderboard import handle as handleLeaderboard
+from interactions.register import handle as handleRegister
+from utils.User import User
 
 class Buttons(discord.ui.View):
     def __init__(self, options = [], event = '', question = ''):
@@ -37,12 +39,13 @@ class Buttons(discord.ui.View):
         
         return validate_button
 
-class SeasonButtons(discord.ui.View):
-    def __init__(self, options = [], question = ''):
+class RegisterButtons(discord.ui.View):
+    def __init__(self, options = [], question = '', participant:User=None):
         super().__init__(timeout=180)
         self.options = options
         self.question = question
         self.build_buttons()
+        self.participant = participant
     
     def build_buttons(self):
 
@@ -58,10 +61,7 @@ class SeasonButtons(discord.ui.View):
     def generate_callback(self, option: str):
         
         async def validate_button(interaction: discord.Interaction):
-                response = await handleLeaderboard(interaction, option['id'])
-                embed = discord.Embed(title = option['name'], description = response['message'])
-                embed.set_author(name = interaction.user, icon_url = interaction.user.avatar)
-                await interaction.response.edit_message(embed = embed, content = None, view = None)
+                await handleRegister(interaction, option['name'], self.participant)
         
         return validate_button
 
