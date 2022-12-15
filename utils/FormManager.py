@@ -11,7 +11,7 @@ class FormManager:
         self.i = 0
         self.nQuestions = 0
         self.questions = []
-        self.season = ''
+        self.season_id = ''
 
     async def handleRequest(self, user):
         
@@ -19,7 +19,7 @@ class FormManager:
         data = ''
         if user.avatar_url == '':
             data = {
-                "season": user.season,
+                "season_id": user.season_id,
                 "member": {
                     "id": user.discord_id,
                     "username": user.username,
@@ -28,7 +28,7 @@ class FormManager:
             }
         else:
             data = {
-                "season": user.season,
+                "season_id": user.season_id,
                 "member": {
                     "id": user.discord_id,
                     "username": user.username,
@@ -37,7 +37,7 @@ class FormManager:
                 "answers": answers
             }
         
-        value = requests.post(os.environ["API_URL"] + '/season/register', data=json.dumps(data), headers={
+        value = requests.post(os.environ["API_URL"] + '/seasons/register', data=json.dumps(data), headers={
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
