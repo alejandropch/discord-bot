@@ -4,18 +4,19 @@ from utils.User import User
 from utils.getFields import handle as getFields
 
 
-async def handle(interaction: discord.Interaction, season: str, participant: User):
+async def handle(interaction: discord.Interaction, season_id: str, participant: User):
     participant.clear()
-    exists = await userExists(str(interaction.user.id),season)
+    exists = await userExists(interaction,season_id)
+
     if exists["status"]=="error":
         raise NameError(exists["message"])
 
 
         
-    fields = getFields(season)
+    fields = getFields(season_id)
     if fields["status"] == "error":
         raise NameError(fields["message"])
-    await participant.setRemainingData(interaction, season, fields['data']) 
+    await participant.setRemainingData(interaction, season_id, fields['data']) 
     if participant.nQuestions == 0:    
         try:
             await participant.handleRequest(participant)
