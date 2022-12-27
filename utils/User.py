@@ -20,7 +20,7 @@ class User(FormManager):
         self.discord_id = ''
         self.username = ''
 
-    async def setRemainingData(self, interaction: discord.Interaction, season: str=None, fields=None):
+    async def setRemainingData(self, interaction: discord.Interaction, season_id: str=None, fields=None):
         """ this function sets the remaining data from discord and the CE Admin """
 
         # this will return only the questions inside the question object and store it in a list
@@ -33,8 +33,10 @@ class User(FormManager):
         self.username = aux[0]
         self.avatar_url = str(interaction.user.avatar.url if interaction.user.avatar is not None else '')
         self.discord_id = str(interaction.user.id)
+
+        # comming from FormManager parent class
         self.user = await self.client.fetch_user(self.discord_id)
-        self.season=season
+        self.season_id=season_id
 
     def clear(self):
         """ restart the iterator and the attributes of the participant """

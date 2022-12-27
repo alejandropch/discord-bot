@@ -9,6 +9,7 @@ from discord import app_commands
 
 from utils.User import User
 from utils.seasons import getSeasons
+from utils.userExists import handle as userExists
 
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
@@ -20,6 +21,7 @@ from interactions.mult import handle as handleMult
 from interactions.mult import getEvent
 from interactions.register import handle as handleRegister
 from views.RegisterModal import RegisterModal
+
 # views
 from views.views import Buttons
 from views.trivia import SeasonButtons as TriviaSeasonButtons
@@ -56,21 +58,29 @@ tree = app_commands.CommandTree(client)
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
 async def register(interaction: discord.Interaction):
     participant = User(client)
-    response =  await getSeasons(discord_id=str(interaction.user.id), unregistered=True)
-    if response['status'] == 'success':
-        #if there is no seasons
-        if len(response['data']['options'])==0:
-            await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)    
-        #if there is one season
-        elif len(response['data']['options'])==1:
-            season_name = response['data']['options'][0]['name']
-            await handleRegister(interaction, season_name, participant)
-            await interaction.response.send_modal(RegisterModal(participant=participant,one_season=True))
-        else: 
-            #if there is more than one season
-            await interaction.response.send_message(response['data']['question'], view=RegisterSeasonButtons(options=response['data']['options'], question=response['data']['question'], participant=participant), ephemeral=True)
-    else: 
+    # registering the user into the db if not already
+
+    is_register = await userExists(interaction)
+
+    if is_register['status'] != 'success':
+        await interaction.response.send_message(is_register['message'], ephemeral=True)
+
+    response = await getSeasons(discord_id=str(interaction.user.id), unregistered=True)
+
+    if response['status'] != 'success':
         await interaction.response.send_message(response['message'], ephemeral=True)
+
+    # if there is no seasons
+    if len(response['data']['options']) == 0:
+        await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)
+    # if there is one season
+    elif len(response['data']['options']) == 1:
+        season_id = response['data']['options'][0]['id']
+        await handleRegister(interaction, season_id, participant)
+        await interaction.response.send_modal(RegisterModal(participant=participant, one_season=True))
+    else:
+        # if there is more than one season
+        await interaction.response.send_message(response['data']['question'], view=RegisterSeasonButtons(options=response['data']['options'], question=response['data']['question'], participant=participant), ephemeral=True)
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')
@@ -91,6 +101,7 @@ async def trivia(interaction: discord.Interaction):
         await interaction.response.send_message(response['data']['question'], view=TriviaSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
     else:
         await interaction.response.send_message(response['message'], ephemeral=True)
+
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
 async def leaderboard(interaction: discord.Interaction):
