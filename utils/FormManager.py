@@ -18,7 +18,7 @@ class FormManager:
 
     async def handleRequest(self, user):
 
-        answers =joinAnswers(self) if len(self.questions) !=0 else [{'id':'',"answer":[]}]
+        answers = joinAnswers(self) if len(self.questions) != 0 else [{'id': '', "answer": []}]
         data = ''
         if user.avatar_url == '':
             data = {
@@ -39,7 +39,7 @@ class FormManager:
                 },
                 "answers": answers
             }
-        
+
         value = requests.post(os.environ["API_URL"] + '/seasons/register', data=json.dumps(data), headers={
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
@@ -49,8 +49,8 @@ class FormManager:
             value = value.json()
 
             try:
-                if value['status']=='error':
-                    raise Exception    
+                if value['status'] == 'error':
+                    raise Exception
             except Exception:
                 print(value)
                 return "Something went wrong!"
@@ -60,8 +60,7 @@ class FormManager:
             print("json empty")
             return "Something went wrong!"
 
-
-    def getOutputResult(self,participant):
+    def getOutputResult(self, participant):
         """ print all the information the user has given"""
         output = ''
         for i in range(self.nQuestions):
@@ -72,5 +71,4 @@ class FormManager:
 
     async def setListOfQuestions(self, season_id):
         response = await getFields(season_id)
-        self.questions=getQuestionsList(response['data'])
-        
+        self.questions = getQuestionsList(response['data'])

@@ -10,27 +10,27 @@ from utils.seasons import getRandomQuestion
 from utils.User import User
 from utils.seasons import getFields
 
+
 class RegisterButtons(discord.ui.View):
-    def __init__(self, options = [], question = '', participant:User=None):
+    def __init__(self, options=[], question='', participant: User = None):
         super().__init__(timeout=180)
         self.options = options
         self.question = question
         self.build_buttons()
         self.participant = participant
-    
+
     def build_buttons(self):
 
         callbacks = {}
         for idx, option in enumerate(self.options):
             button = discord.ui.Button(label=option['name'], style=discord.ButtonStyle.blurple)
 
-            button.callback = self.generate_callback(option = option)
+            button.callback = self.generate_callback(option=option)
 
             self.add_item(button)
 
-
     def generate_callback(self, option: str):
-        
+
         async def validate_button(interaction: discord.Interaction):
             self.participant.clear()
             await self.participant.setListOfQuestions(option['id'])
