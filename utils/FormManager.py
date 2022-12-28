@@ -2,6 +2,9 @@ import requests
 import os
 import json
 from utils.joinAnswers import joinAnswers
+from utils.getQuestionsList import getQuestionsList
+from utils.seasons import getFields
+
 
 class FormManager:
     def __init__(self, client):
