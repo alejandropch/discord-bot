@@ -70,3 +70,7 @@ class FormManager:
 
         return output
 
+    async def setListOfQuestions(self, season_id):
+        response = await getFields(season_id)
+        self.questions=getQuestionsList(response['data'])
+        
