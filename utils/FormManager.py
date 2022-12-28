@@ -17,8 +17,8 @@ class FormManager:
         self.season_id = ''
 
     async def handleRequest(self, user):
-        
-        answers =joinAnswers(self) if user.nQuestions !=0 else [{'id':'',"answer":[]}]
+
+        answers =joinAnswers(self) if len(self.questions) !=0 else [{'id':'',"answer":[]}]
         data = ''
         if user.avatar_url == '':
             data = {
@@ -47,12 +47,19 @@ class FormManager:
 
         try:
             value = value.json()
-            print(value)
+
+            try:
+                if value['status']=='error':
+                    raise Exception    
+            except Exception:
+                print(value)
+                return "Something went wrong!"
+
             return "Form sent successfully!"
         except json.decoder.JSONDecodeError:
             print("json empty")
+            return "Something went wrong!"
 
-        return "Something went wrong!"
 
     def getOutputResult(self,participant):
         """ print all the information the user has given"""
