@@ -36,17 +36,47 @@ class RegisterButtons(discord.ui.View):
         
         return validate_button
 
-class RegistrationModal(discord.ui.Modal):
-    def __init__(self, title = 'Trivia!', fields = []):
-        super().__init__(title = title)
-        self.fields = fields
-        self.build()
 
-    def build(self):
-        for field in self.fields:
-            text_input = discord.ui.TextInput(label = field['question'], style = discord.TextStyle.short,required = True)
-            self.add_item(text_input)
+class RegisterModal(discord.ui.Modal):
+    def __init__(self, title='Registration Proccess!', participant: User = object, season_id: int = int):
+        super().__init__(title=title)
+        self.participant = participant
+        self.season_id = season_id
+        print(self.season_id)
+        self.start()
+
+    def start(self):
+        for question in self.participant.questions:
+            answer = discord.ui.TextInput(
+                label=question['question'], style=discord.TextStyle.short, required=True)
+            self.add_item(answer)
+            self.participant.saveResponse(answer)
+
+    async def orginizeDataPrevSubmit(self):
+        # exists = await userExists(interaction=discord.Interaction,season_id=self.season_id)
+        # if exists["status"]=="error":
+        #    raise NameError(exists["message"])
+
+        for index in range(len(self.participant.response)):
+            self.participant.response[index] = self.participant.response[index].value
 
     async def on_submit(self, interaction: discord.Interaction):
-        #complete submit method
-        print('Saving data...')
+        try:
+            await self.orginizeDataPrevSubmit()
+            fields = await getFields(self.season_id)
+
+            await self.participant.setRemainingData(interaction, self.season_id, fields['data'])
+
+            response = await self.participant.handleRequest(self.participant)
+            embed = discord.Embed(
+                title=self.title, description=f"{self.participant.getOutputResult(self.participant)}**{response}**")
+            embed.set_author(name=interaction.user,
+                             icon_url=interaction.user.avatar)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
+            # clear participant's data since the register is already made
+            self.participant.clear()
+
+        except Exception as err:
+            print(err)
+            await interaction.response.send_message(content="Something went wrong!!", ephemeral=True)
