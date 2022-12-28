@@ -19,8 +19,7 @@ from interactions.leaderboard import handle as handleLeaderboard
 #from interactions.leaderboard import getSeasons
 from interactions.mult import handle as handleMult
 from interactions.mult import getEvent
-from interactions.register import handle as handleRegister
-from views.RegisterModal import RegisterModal
+from views.registration import RegisterModal as RegisterOneSeasonModal
 
 # views
 from views.views import Buttons
