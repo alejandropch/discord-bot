@@ -51,7 +51,6 @@ class RegisterModal(discord.ui.Modal):
         super().__init__(title=title)
         self.participant = participant
         self.season_id = season_id
-        print(self.season_id)
         self.start()
 
     def start(self):
