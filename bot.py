@@ -57,12 +57,11 @@ tree = app_commands.CommandTree(client)
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
 async def register(interaction: discord.Interaction):
     participant = User(client)
+
     # registering the user into the db if not already
-
-    is_register = await userExists(interaction)
-
-    if is_register['status'] != 'success':
-        await interaction.response.send_message(is_register['message'], ephemeral=True)
+    is_register_in_db = await userExists(interaction)
+    if is_register_in_db['status'] != 'success':
+        await interaction.response.send_message(is_register_in_db['message'], ephemeral=True)
 
     response = await getSeasons(discord_id=str(interaction.user.id), unregistered=True)
 
@@ -75,10 +74,20 @@ async def register(interaction: discord.Interaction):
     # if there is one season
     elif len(response['data']['options']) == 1:
         season_id = response['data']['options'][0]['id']
-        await handleRegister(interaction, season_id, participant)
-        await interaction.response.send_modal(RegisterModal(participant=participant, one_season=True))
+        participant.clear()
+        await participant.setListOfQuestions(season_id)
+
+        # if Season does not have fields then register, else, use RegisterModal
+        if(len(participant.questions) == 0):
+            await participant.setRemainingData(interaction, season_id,) 
+            res = await participant.handleRequest(participant)
+            await interaction.response.send_message(res, ephemeral=True)
+        else:
+            participant.clear()
+            await interaction.response.send_modal(RegisterOneSeasonModal(participant=participant, season_id=season_id))
+    # if there is more than one season
     else:
-        # if there is more than one season
+        participant.clear()
         await interaction.response.send_message(response['data']['question'], view=RegisterSeasonButtons(options=response['data']['options'], question=response['data']['question'], participant=participant), ephemeral=True)
 
 
