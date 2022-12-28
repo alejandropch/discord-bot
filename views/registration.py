@@ -7,6 +7,7 @@ from discord.ext import commands
 from discord import app_commands
 from utils import User
 from utils.seasons import getRandomQuestion
+from utils.User import User
 from utils.seasons import getFields
 
 class RegisterButtons(discord.ui.View):
@@ -31,9 +32,17 @@ class RegisterButtons(discord.ui.View):
     def generate_callback(self, option: str):
         
         async def validate_button(interaction: discord.Interaction):
-            response = await getFields(season_id=option['id'])
-            await interaction.response.send_modal(RegistrationModal(fields=response['data']))
-        
+            self.participant.clear()
+            await self.participant.setListOfQuestions(option['id'])
+
+            # if Season does not have fields then register, else, use RegisterModal
+            if(len(self.participant.questions) == 0):
+                await self.participant.setRemainingData(interaction, option['id'],)
+                res = await self.participant.handleRequest(self.participant)
+                await interaction.response.send_message(res, ephemeral=True)
+            else:
+                await interaction.response.send_modal(RegisterModal(participant=self.participant, season_id=option['id']))
+
         return validate_button
 
 
