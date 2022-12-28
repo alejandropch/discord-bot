@@ -1,14 +1,7 @@
 import discord
 from utils.FormManager import FormManager
-from views.RegisterModal import RegisterModal
+from utils.getQuestionsList import getQuestionsList
 
-def getQuestionsList(fields):
-    """ this function creates a list with only 'id' and 'questions' attributes """
-    
-    questions = []
-    for x in fields:
-        questions.append({"id": x['id'], "question": x['question']})
-    return questions
 
 class User(FormManager):
 
