@@ -5,10 +5,9 @@ from utils.getQuestionsList import getQuestionsList
 
 class User(FormManager):
 
-    def __init__(self, client):
-        super().__init__(client)
+    def __init__(self, interaction: discord.Interaction):
+        super().__init__(interaction)
         self.response = []
-        self.isRegistered = False
         self.avatar_url = ''
         self.discord_id = ''
         self.username = ''
