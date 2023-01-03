@@ -74,4 +74,11 @@ class FormManager:
 
     async def setListOfQuestions(self, season_id):
         response = await getFields(season_id)
-        self.questions = getQuestionsList(response['data'])
+        self.questions = getQuestionsList(fields = response['data'])
+        self.setNumberOfQuestions()
+
+    def setNumberOfQuestions(self):
+        self.nQuestions = len(self.questions)
+
+    def setSeasonID(self, season_id: str):
+            self.season_id = season_id
