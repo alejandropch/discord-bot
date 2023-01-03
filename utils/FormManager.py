@@ -54,7 +54,11 @@ class FormManager:
                 print(value)
                 return "Something went wrong!"
 
-            return "Form sent successfully!"
+            if len(self.questions) > 0:
+                return "Form sent successfully!"
+            else:
+                return "You have successfully registered!"
+
         except json.decoder.JSONDecodeError:
             print("json empty")
             return "Something went wrong!"
