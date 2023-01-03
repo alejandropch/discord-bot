@@ -1,14 +1,8 @@
 import discord
-import requests
-from dotenv import load_dotenv
-import json
-import os
 from discord.ext import commands
 from discord import app_commands
 from utils import User
-from utils.seasons import getRandomQuestion
 from utils.User import User
-from utils.seasons import getFields
 
 
 class RegisterButtons(discord.ui.View):
