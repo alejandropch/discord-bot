@@ -15,9 +15,9 @@ class RegisterButtons(discord.ui.View):
 
     def build_buttons(self):
 
-        callbacks = {}
         for idx, option in enumerate(self.options):
-            button = discord.ui.Button(label=option['name'], style=discord.ButtonStyle.blurple)
+            button = discord.ui.Button(
+                label=option['name'], style=discord.ButtonStyle.blurple)
 
             button.callback = self.generate_callback(option=option)
 
@@ -26,13 +26,13 @@ class RegisterButtons(discord.ui.View):
     def generate_callback(self, option: str):
 
         async def validate_button(interaction: discord.Interaction):
-            self.participant.clear()
+            self.participant.deleteResponse()
             await self.participant.setListOfQuestions(option['id'])
 
             # if Season does not have fields then register, else, use RegisterModal
             if(len(self.participant.questions) == 0):
-                await self.participant.setRemainingData(interaction, option['id'],)
-                res = await self.participant.handleRequest(self.participant)
+                self.participant.setSeasonID(season_id=option['id'],)
+                res = await self.participant.handleRequest()
                 await interaction.response.send_message(res, ephemeral=True)
             else:
                 await interaction.response.send_modal(RegisterModal(participant=self.participant, season_id=option['id']))
@@ -65,19 +65,14 @@ class RegisterModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction):
         try:
             await self.orginizeDataPrevSubmit()
-            fields = await getFields(self.season_id)
-
-            await self.participant.setRemainingData(interaction, self.season_id, fields['data'])
-
-            response = await self.participant.handleRequest(self.participant)
-            embed = discord.Embed(
-                title=self.title, description=f"{self.participant.getOutputResult(self.participant)}**{response}**")
-            embed.set_author(name=interaction.user,
-                             icon_url=interaction.user.avatar)
+            self.participant.setSeasonID(self.season_id)
+            response = await self.participant.handleRequest()
+            embed = discord.Embed(title=self.title, description=f"{self.participant.getOutputResult(self.participant)}**{response}**")
+            embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
             # clear participant's data since the register is already made
-            self.participant.clear()
+            self.participant.deleteResponse()
 
         except Exception as err:
             print(err)
