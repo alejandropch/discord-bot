@@ -5,13 +5,22 @@ import os
 #General Utility functions for seasons
 
 
-async def getSeasons(discord_id:str=None, unregistered:bool=False):
-    route=f'/options/seasons/{discord_id}?unregistered={unregistered}' if discord_id != None else '/options/seasons'
-    
-    x = requests.get(os.environ["API_URL"] + route, headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + os.environ["API_KEY"]
-        })
+async def getSeasons(discord_id: str = None, unregistered: bool = False):
+    route = f'/options/seasons/{discord_id}?unregistered={unregistered}' if discord_id != None else '/options/seasons'
+
+    x = requests.get(os.environ["API_URL"] + route, headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + os.environ["API_KEY"]
+    })
+
+    res = x.json()
+
+    if res['status'] != 'success':
+        raise ValueError(res['message'])
+
+    return res
+
+# gets a random event question from the selected season
 
     return x.json()
 
