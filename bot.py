@@ -56,40 +56,37 @@ tree = app_commands.CommandTree(client)
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
 async def register(interaction: discord.Interaction):
-    participant = User(client)
+    participant = User(interaction)
 
-    # registering the user into the db if not already
-    is_register_in_db = await userExists(interaction)
-    if is_register_in_db['status'] != 'success':
-        await interaction.response.send_message(is_register_in_db['message'], ephemeral=True)
+    try:
+        # registering the user into the db if not already
+        await userExists(interaction)
 
-    response = await getSeasons(discord_id=str(interaction.user.id), unregistered=True)
+        response = (await getSeasons(discord_id=str(interaction.user.id), unregistered=True))['data']
+        options = response['options']
 
-    if response['status'] != 'success':
-        await interaction.response.send_message(response['message'], ephemeral=True)
+        # if there is no options
+        if len(options) == 0:
+            await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)
 
-    # if there is no seasons
-    if len(response['data']['options']) == 0:
-        await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)
-    # if there is one season
-    elif len(response['data']['options']) == 1:
-        season_id = response['data']['options'][0]['id']
-        participant.clear()
-        await participant.setListOfQuestions(season_id)
+        # if there is one options
+        elif len(options) == 1:
+            season_id = options[0]['id']
+            await participant.setListOfQuestions(season_id)
 
-        # if Season does not have fields then register, else, use RegisterModal
-        if(len(participant.questions) == 0):
-            await participant.setRemainingData(interaction, season_id,) 
-            res = await participant.handleRequest(participant)
-            await interaction.response.send_message(res, ephemeral=True)
+            # if Season does not have fields then register, else, use the register Modal
+            if(len(participant.questions) == 0):
+                res = await participant.handleRequest()
+                await interaction.response.send_message(res, ephemeral=True)
+            else:
+                await interaction.response.send_modal(RegisterOneSeasonModal(participant=participant, season_id=season_id))
+
+        # if there is more than one option
         else:
-            participant.clear()
-            await interaction.response.send_modal(RegisterOneSeasonModal(participant=participant, season_id=season_id))
-    # if there is more than one season
-    else:
-        participant.clear()
-        await interaction.response.send_message(response['data']['question'], view=RegisterSeasonButtons(options=response['data']['options'], question=response['data']['question'], participant=participant), ephemeral=True)
+            await interaction.response.send_message(response['question'], view=RegisterSeasonButtons(options, question=response['question'], participant=participant), ephemeral=True)
 
+    except ValueError as err:
+        await interaction.response.send_message(err, ephemeral=True)
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')
 async def attendance(interaction: discord.Interaction, event: str):
