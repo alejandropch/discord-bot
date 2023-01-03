@@ -15,26 +15,26 @@ class FormManager:
         self.questions = []
         self.season_id = ''
 
-    async def handleRequest(self, user):
+    async def handleRequest(self):
 
         answers = joinAnswers(self) if len(self.questions) != 0 else [{'id': '', "answer": []}]
         data = ''
-        if user.avatar_url == '':
+        if self.avatar_url == '':
             data = {
-                "season_id": user.season_id,
+                "season_id": self.season_id,
                 "member": {
-                    "id": user.discord_id,
-                    "username": user.username,
+                    "id": self.discord_id,
+                    "username": self.username,
                 },
                 "answers": answers
             }
         else:
             data = {
-                "season_id": user.season_id,
+                "season_id": self.season_id,
                 "member": {
-                    "id": user.discord_id,
-                    "username": user.username,
-                    "avatar_url": user.avatar_url,
+                    "id": self.discord_id,
+                    "username": self.username,
+                    "avatar_url": self.avatar_url,
                 },
                 "answers": answers
             }
