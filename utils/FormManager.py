@@ -7,8 +7,7 @@ from utils.seasons import getFields
 
 
 class FormManager:
-    def __init__(self, client):
-        self.client = client
+    def __init__(self):
         self.user = None
         # "i" attribute is an iterable for the participant form, open to sugestions
         self.i = 0
