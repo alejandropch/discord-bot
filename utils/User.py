@@ -11,20 +11,16 @@ class User(FormManager):
         self.avatar_url = ''
         self.discord_id = ''
         self.username = ''
+        self.setUserData(interaction)
 
-    async def setRemainingData(self, interaction: discord.Interaction, season_id: str = None, fields=[]):
-        """ this function sets the remaining data from discord and the CE Admin """
+    def setUserData(self, interaction: discord.Interaction):
+        self.deleteResponse()
 
-        # this will return only the questions inside the question object and store it in a list
-        self.isRegistered = True
-        self.questions = getQuestionsList(fields)
-
-        self.nQuestions = len(self.questions)
         # this will return an array, that way is stored in an aux variable
         aux = interaction.user.name + '#' + interaction.user.discriminator,
+
         self.username = aux[0]
-        self.avatar_url = str(
-            interaction.user.avatar.url if interaction.user.avatar is not None else '')
+        self.avatar_url = str(interaction.user.avatar.url if interaction.user.avatar is not None else '')
         self.discord_id = str(interaction.user.id)
 
         # comming from FormManager parent class
