@@ -1,10 +1,10 @@
-def joinAnswers(form):
+def joinAnswers(user):
   """ this function collects all questions' id with its answer """
   answers=[]
 
-  for i in range(form.nQuestions):
+  for i in range(user.nQuestions):
       answers.append({
-          "id": str(form.questions[i]["id"]),
-          "answer": form.response[i]
+          "id": str(user.questions[i]["id"]),
+          "answer": user.response[i]
   })
   return answers
