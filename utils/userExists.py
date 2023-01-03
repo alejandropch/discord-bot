@@ -21,6 +21,7 @@ async def handle(interaction, season_id:str=None):
     })
     # This line decodes the response from the request as JSON and assigns it to a variable
     res = json.loads(value.text)
-
+    if res['status'] != 'success':
+        raise ValueError (res['message'])
     # This line returns the JSON response
     return res
