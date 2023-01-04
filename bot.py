@@ -9,7 +9,7 @@ from discord import app_commands
 
 from utils.User import User
 from utils.seasons import getSeasons
-from utils.findOrCreateUser import handle as userExists
+from utils.findOrCreateUser import handle as findOrCreateUser
 
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
@@ -77,7 +77,7 @@ async def register(interaction: discord.Interaction):
 
             # if Season does not have fields then register, else, use the register Modal
             if(len(participant.questions) == 0):
-                res = await participant.handleRequest()
+                res = await participant.handleRequest(season_id)
                 await interaction.response.send_message(res, ephemeral=True)
             else:
                 await interaction.response.send_modal(RegisterOneSeasonModal(participant=participant, season_id=season_id))
