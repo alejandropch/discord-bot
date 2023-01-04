@@ -9,7 +9,7 @@ from discord import app_commands
 
 from utils.User import User
 from utils.seasons import getSeasons
-from utils.userExists import handle as userExists
+from utils.findOrCreateUser import handle as userExists
 
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
@@ -60,7 +60,8 @@ async def register(interaction: discord.Interaction):
 
     try:
         # registering the user into the db if not already
-        await userExists(interaction)
+        # need refactorization
+        await findOrCreateUser(interaction)
 
         response = (await getSeasons(discord_id=str(interaction.user.id), unregistered=True))['data']
         options = response['options']
