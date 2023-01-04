@@ -15,8 +15,9 @@ class FormManager:
         self.questions = []
         self.season_id = ''
 
-    async def handleRequest(self):
+    async def handleRequest(self,season_id):
 
+        self.setSeasonID(season_id)
         answers = joinAnswers(self) if len(self.questions) != 0 else [{'id': '', "answer": []}]
         data = ''
         if self.avatar_url == '':
