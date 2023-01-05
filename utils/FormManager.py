@@ -75,6 +75,8 @@ class FormManager:
 
     async def setListOfQuestions(self, season_id):
         response = await getFields(season_id)
+        if response['status'] != 'success':
+            raise Exception(response['message'])
         self.questions = getQuestionsList(fields = response['data'])
         self.setNumberOfQuestions()
 
