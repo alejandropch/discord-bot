@@ -26,7 +26,8 @@ from views.views import Buttons
 from views.trivia import SeasonButtons as TriviaSeasonButtons
 from views.registration import RegisterButtons as RegisterSeasonButtons
 
-from views.modal import TriviaModal
+from views.trivia import TriviaModal
+from utils.seasons import getRandomQuestion
 
 
 load_dotenv()
@@ -104,7 +105,20 @@ async def register(interaction: discord.Interaction):
 async def trivia(interaction: discord.Interaction):
     response = await getSeasons(discord_id=str(interaction.user.id))
     if response['status'] == 'success':
-        await interaction.response.send_message(response['data']['question'], view=TriviaSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
+        season_count = len(response['data']['options'])
+        if season_count == 0:
+            await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
+        elif season_count == 1:
+            question = await getRandomQuestion(season_id=response['data']['options'][0]['id'])
+            if question['status'] == 'success':
+                if question['data']['multiple']:
+                    await interaction.response.send_message(question['data']['question'], view=Buttons(options=question['data']['options'], event=question['data']['event'], question=question['data']['question']), ephemeral=True)
+                else:
+                    await interaction.response.send_modal(TriviaModal(title=question['data']['question'], event=question['data']['event']))
+            else:
+                await interaction.response.send_message(question['message'])
+        else:
+            await interaction.response.send_message(response['data']['question'], view=TriviaSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
     else:
         await interaction.response.send_message(response['message'], ephemeral=True)
 

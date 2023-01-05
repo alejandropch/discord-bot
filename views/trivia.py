@@ -6,6 +6,7 @@ import os
 from discord.ext import commands
 from discord import app_commands
 from utils.seasons import getRandomQuestion
+from interactions.trivia import handle as handleTrivia
 
 class SeasonButtons(discord.ui.View):
     def __init__(self, options = [], question = ''):
