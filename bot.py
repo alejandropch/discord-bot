@@ -61,7 +61,6 @@ async def register(interaction: discord.Interaction):
 
     try:
         # registering the user into the db if not already
-        # need refactorization
         await findOrCreateUser(interaction)
 
         response = (await getSeasons(discord_id=str(interaction.user.id), unregistered=True))['data']
@@ -87,8 +86,9 @@ async def register(interaction: discord.Interaction):
         else:
             await interaction.response.send_message(response['question'], view=RegisterSeasonButtons(options, question=response['question'], participant=participant), ephemeral=True)
 
-    except ValueError as err:
-        await interaction.response.send_message(err, ephemeral=True)
+    except Exception as err:
+        print(err)
+        await interaction.response.send_message("Something went wrong!", ephemeral=True)
 
 # @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')
 # async def attendance(interaction: discord.Interaction, event: str):
