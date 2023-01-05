@@ -116,7 +116,7 @@ async def trivia(interaction: discord.Interaction):
                 else:
                     await interaction.response.send_modal(TriviaModal(title=question['data']['question'], event=question['data']['event']))
             else:
-                await interaction.response.send_message(question['message'])
+                await interaction.response.send_message(question['message'], ephemeral=True)
         else:
             await interaction.response.send_message(response['data']['question'], view=TriviaSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
     else:

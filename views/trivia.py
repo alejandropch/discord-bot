@@ -36,7 +36,7 @@ class SeasonButtons(discord.ui.View):
                     else:
                         await interaction.response.send_modal(TriviaModal(title=response['data']['question'], event=response['data']['event']))
                 else:
-                    await interaction.response.edit_message(response['message'])
+                    await interaction.response.send_message(response['message'], ephemeral=True)
         
         return validate_button
 
