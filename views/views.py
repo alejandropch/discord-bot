@@ -6,7 +6,6 @@ import os
 from discord.ext import commands
 from discord import app_commands
 from interactions.trivia import handle as handleTrivia
-from interactions.leaderboard import handle as handleLeaderboard
 from utils.User import User
 from utils.seasons import getFields
 
