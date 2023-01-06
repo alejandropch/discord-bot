@@ -23,6 +23,8 @@ from views.registration import RegisterModal as RegisterOneSeasonModal
 
 # views
 from views.views import Buttons
+from views.leaderboard import SeasonButtons as LeaderboardSeasonButtons
+
 from views.trivia import SeasonButtons as TriviaSeasonButtons
 from views.registration import RegisterButtons as RegisterSeasonButtons
 
@@ -125,11 +127,14 @@ async def trivia(interaction: discord.Interaction):
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
 async def leaderboard(interaction: discord.Interaction):
-    response = await getSeasons()
-    if response['status'] == 'success':
-        await interaction.response.send_message(response['data']['question'], view=SeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
-    else:
-        await interaction.response.send_message(response['message'], ephemeral=True)
-
+    try:
+        response = await getSeasons()
+        if response['status'] == 'success':
+            await interaction.response.send_message(response['data']['question'], view=LeaderboardSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
+        else:
+            await interaction.response.send_message(response['message'], ephemeral=True)
+    except Exception as err:
+        print(err)
+        await interaction.response.send_message("Something went wrong!", ephemeral=True)
 
 client.run(bot_token)
