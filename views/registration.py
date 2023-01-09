@@ -1,8 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from utils import User
-from utils.User import User
+from utils.classes import User
 
 
 class RegisterButtons(discord.ui.View):

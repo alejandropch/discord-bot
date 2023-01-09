@@ -7,28 +7,26 @@ import os
 from discord.ext import commands
 from discord import app_commands
 
-from utils.User import User
-from utils.seasons import getSeasons
-from utils.findOrCreateUser import handle as findOrCreateUser
-
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
 from interactions.leaderboard import handle as handleLeaderboard
-#from interactions.leaderboard import getSeasons
 from interactions.mult import handle as handleMult
 from interactions.mult import getEvent
-from views.registration import RegisterModal as RegisterOneSeasonModal
 
 # views
 from views.views import Buttons
 from views.leaderboard import SeasonButtons as LeaderboardSeasonButtons
-
 from views.trivia import SeasonButtons as TriviaSeasonButtons
 from views.registration import RegisterButtons as RegisterSeasonButtons
-
+from views.registration import RegisterModal
 from views.trivia import TriviaModal
+
+# utils
+from utils.classes import User
+from utils.seasons import getSeasons
+from utils.seasons import findOrCreateUser 
 from utils.seasons import getRandomQuestion
 
 
@@ -82,7 +80,7 @@ async def register(interaction: discord.Interaction):
                 res = await participant.handleRequest(season_id)
                 await interaction.response.send_message(res, ephemeral=True)
             else:
-                await interaction.response.send_modal(RegisterOneSeasonModal(participant=participant, season_id=season_id))
+                await interaction.response.send_modal(RegisterModal(participant=participant, season_id=season_id))
 
         # if there is more than one option
         else:
