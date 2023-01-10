@@ -54,7 +54,7 @@ async def findOrCreateUser(interaction):
         'Authorization': 'Bearer ' + os.environ["API_KEY"]
     })
     # This line decodes the response from the request as JSON and assigns it to a variable
-    find = json.loads(x_find.text)
+    find = x_find.json()
     if find['status'] != 'success':
         
         data={
@@ -68,10 +68,38 @@ async def findOrCreateUser(interaction):
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
 
-        create = json.loads(x_create.text)
-        print(create)
+        create = x_create.json()
 
         return create
     
     # This line returns the JSON response
     return find
+
+async def assignRole(discord_id, role_id=''):
+    if role_id =='':
+        return
+
+    data = {
+        'member': {
+            'discord_id':discord_id,
+            'role_id' : role_id
+        },
+        'guild_id': os.environ["GUILD_ID"]
+    }
+    x = requests.put(os.environ["API_URL"] + f'/participants/assign-role', data = json.dumps(data), headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + os.environ["API_KEY"]
+    })
+
+    res = x.json()
+    if(res['status']!= "success"):
+        raise Exception(res['message'])
+    
+    return res
+
+def handleSuccessfulResponse(number_of_questions):
+    if len(number_of_questions) > 0:
+                return "Form sent successfully!"
+            
+    if len(number_of_questions) == 0:
+        return "You have successfully registered!"
