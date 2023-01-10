@@ -7,6 +7,9 @@ import os
 from discord.ext import commands
 from discord import app_commands
 
+
+import requests
+
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
 from interactions.trivia import handle as handleTrivia
@@ -58,7 +61,7 @@ tree = app_commands.CommandTree(client)
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
 async def register(interaction: discord.Interaction):
     participant = User(interaction)
-
+    
     try:
         # registering the user into the db if not already
         await findOrCreateUser(interaction)
@@ -69,23 +72,25 @@ async def register(interaction: discord.Interaction):
         # if there is no options
         if len(options) == 0:
             await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)
-
+        
         # if there is one options
-        elif len(options) == 1:
+        if len(options) == 1:
             season_id = options[0]['id']
             await participant.setListOfQuestions(season_id)
-
-            # if Season does not have fields then register, else, use the register Modal
+            participant.setRoleID(options[0]['role_id'])
+            
+            # if Season does not have questions(fields) then register, else, use the register Modal
             if(len(participant.questions) == 0):
                 res = await participant.handleRequest(season_id)
                 await interaction.response.send_message(res, ephemeral=True)
-            else:
+
+            if(len(participant.questions) > 0):
                 await interaction.response.send_modal(RegisterModal(participant=participant, season_id=season_id))
 
         # if there is more than one option
-        else:
+        if len(options) > 1:
             await interaction.response.send_message(response['question'], view=RegisterSeasonButtons(options, question=response['question'], participant=participant), ephemeral=True)
-
+        
     except Exception as err:
         print(err)
         await interaction.response.send_message("Something went wrong!", ephemeral=True)
