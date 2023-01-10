@@ -1,8 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from utils import User
-from utils.User import User
+from utils.classes import User
 
 
 class RegisterButtons(discord.ui.View):
@@ -14,7 +13,6 @@ class RegisterButtons(discord.ui.View):
         self.participant = participant
 
     def build_buttons(self):
-
         for idx, option in enumerate(self.options):
             button = discord.ui.Button(
                 label=option['name'], style=discord.ButtonStyle.blurple)
@@ -28,6 +26,7 @@ class RegisterButtons(discord.ui.View):
         async def validate_button(interaction: discord.Interaction):
             self.participant.deleteResponse()
             await self.participant.setListOfQuestions(option['id'])
+            self.participant.setRoleID(option['role_id'])
 
             # if Season does not have fields then register, else, use RegisterModal
             if(len(self.participant.questions) == 0):
