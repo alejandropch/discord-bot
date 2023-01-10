@@ -4,6 +4,8 @@ import requests
 import os
 import json
 from utils.seasons import getFields
+from utils.seasons import assignRole
+from utils.seasons import handleSuccessfulResponse
 
 
 class FormManager:
@@ -12,32 +14,22 @@ class FormManager:
         self.nQuestions = 0
         self.questions = []
         self.season_id = ''
+        self.role_id = ''
 
     async def handleRequest(self,season_id):
 
         self.setSeasonID(season_id)
         answers = self.joinAnswers()
-        data = ''
         
-        if self.avatar_url == '':
-            data = {
-                "season_id": self.season_id,
-                "member": {
-                    "id": self.discord_id,
-                    "username": self.username,
-                },
-                "answers": answers
-            }
-        else:
-            data = {
-                "season_id": self.season_id,
-                "member": {
-                    "id": self.discord_id,
-                    "username": self.username,
-                    "avatar_url": self.avatar_url,
-                },
-                "answers": answers
-            }
+        data = {
+            "season_id": self.season_id,
+            "member": {
+                "id": self.discord_id,
+                "username": self.username,
+                **({"avatar_url":self.avatar_url } if self.avatar_url else {}),
+            },
+            "answers": answers
+        }
 
         value = requests.post(os.environ["API_URL"] + '/seasons/register', data=json.dumps(data), headers={
             'Content-Type': 'application/json',
@@ -46,23 +38,20 @@ class FormManager:
 
         try:
             value = value.json()
-
-            try:
-                if value['status'] == 'error':
-                    raise Exception
-            except Exception:
-                print(value)
+            if value['status'] == 'error':
                 return "Something went wrong!"
+            
+            # after successfully register a participant, it should assign it a role 
+            await assignRole(discord_id=self.discord_id, role_id=self.role_id)
 
-            if len(self.questions) > 0:
-                return "Form sent successfully!"
-            else:
-                return "You have successfully registered!"
+            return handleSuccessfulResponse(self.questions)
 
         except json.decoder.JSONDecodeError:
             print("json empty")
             return "Something went wrong!"
-
+        except Exception as err:
+            print(err)
+            return "Oops! Seems the role of the season was not assigned to you."
 
     def getOutputResult(self, participant):
         """ print all the information the user has given"""
@@ -91,6 +80,9 @@ class FormManager:
 
     def setSeasonID(self, season_id: str):
             self.season_id = season_id
+
+    def setRoleID(self, role_id: str):
+            self.role_id = int(role_id)
 
     def joinAnswers(self):
         """ collects all questions' id with its answer if the form have questions, if not, it will return an array with empty attributes """
@@ -130,7 +122,6 @@ class User(FormManager):
     def deleteResponse(self):
         """ Clear the response list """
         self.response.clear()
-        self.i = 0
 
     def saveResponse(self, res):
         """ save the user's response """
