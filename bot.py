@@ -23,7 +23,8 @@ from views.trivia import SeasonButtons as TriviaSeasonButtons
 from views.registration import RegisterButtons as RegisterSeasonButtons
 from views.registration import RegisterModal
 from views.trivia import TriviaModal
-
+from views.rules import RulesButtons
+from views.rules import showTC
 # utils
 from utils.classes import Participant
 from utils.seasons import getSeasons
@@ -137,5 +138,30 @@ async def leaderboard(interaction: discord.Interaction):
     except Exception as err:
         print(err)
         await interaction.response.send_message("Something went wrong!", ephemeral=True)
+
+
+@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='rules', description='Terms & Conditions')
+async def rules(interaction: discord.Interaction):
+    try:
+        response = (await getSeasons())['data']
+
+        options = response['options']
+
+        # if there is no options
+        if len(options) == 0:
+            await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
+        
+        # if there is one options
+        if len(options) == 1:
+            await showTC(interaction=interaction, option=options[0])
+            
+        # if there is more than one option
+        if len(options) > 1:
+            await interaction.response.send_message(response['question'], view=RulesButtons(options=options), ephemeral=True)
+        
+    except Exception as err:
+        print(err)
+        await interaction.response.send_message("Something went wrong!", ephemeral=True)
+
 
 client.run(bot_token)
