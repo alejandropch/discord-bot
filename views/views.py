@@ -6,7 +6,7 @@ import os
 from discord.ext import commands
 from discord import app_commands
 from interactions.trivia import handle as handleTrivia
-from utils.classes import User
+from utils.classes import Participant
 from utils.seasons import getFields
 
 class Buttons(discord.ui.View):
@@ -39,7 +39,7 @@ class Buttons(discord.ui.View):
         return validate_button
 
 class RegisterButtons(discord.ui.View):
-    def __init__(self, options = [], question = '', participant:User=None):
+    def __init__(self, options = [], question = '', participant:Participant=None):
         super().__init__(timeout=180)
         self.options = options
         self.question = question

@@ -4,7 +4,7 @@ import requests
 import os
 import json
 from utils.seasons import getFields
-from utils.seasons import assignRole
+from utils.user import assignUserRole
 from utils.seasons import handleSuccessfulResponse
 
 
@@ -42,7 +42,7 @@ class FormManager:
                 return "Something went wrong!"
             
             # after successfully register a participant, it should assign it a role 
-            await assignRole(discord_id=self.discord_id, role_id=self.role_id)
+            await assignUserRole(discord_id=self.discord_id, role_id=self.role_id)
 
             return handleSuccessfulResponse(self.questions)
 
@@ -99,7 +99,7 @@ class FormManager:
         return answers
 
 
-class User(FormManager):
+class Participant(FormManager):
 
     def __init__(self, interaction: discord.Interaction):
         super().__init__()

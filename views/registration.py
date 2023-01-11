@@ -1,11 +1,11 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from utils.classes import User
+from utils.classes import Participant
 
 
 class RegisterButtons(discord.ui.View):
-    def __init__(self, options=[], question='', participant: User = None):
+    def __init__(self, options=[], question='', participant: Participant = None):
         super().__init__(timeout=180)
         self.options = options
         self.question = question
@@ -39,7 +39,7 @@ class RegisterButtons(discord.ui.View):
 
 
 class RegisterModal(discord.ui.Modal):
-    def __init__(self, title='Registration Proccess!', participant: User = object, season_id: int = int):
+    def __init__(self, title='Registration Proccess!', participant: Participant = object, season_id: int = int):
         super().__init__(title=title)
         self.participant = participant
         self.season_id = season_id

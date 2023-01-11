@@ -8,8 +8,6 @@ from discord.ext import commands
 from discord import app_commands
 
 
-import requests
-
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
 from interactions.trivia import handle as handleTrivia
@@ -27,9 +25,9 @@ from views.registration import RegisterModal
 from views.trivia import TriviaModal
 
 # utils
-from utils.classes import User
+from utils.classes import Participant
 from utils.seasons import getSeasons
-from utils.seasons import findOrCreateUser 
+from utils.user import findOrCreateUser 
 from utils.seasons import getRandomQuestion
 
 
@@ -60,7 +58,7 @@ tree = app_commands.CommandTree(client)
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
 async def register(interaction: discord.Interaction):
-    participant = User(interaction)
+    participant = Participant(interaction)
     
     try:
         # registering the user into the db if not already
