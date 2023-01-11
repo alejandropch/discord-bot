@@ -41,7 +41,7 @@ class FormManager:
             if value['status'] == 'error':
                 return "Something went wrong!"
             
-            # after successfully register a participant, it should assign it a role 
+            # after successfully register a participant, it should assign the discord user a role 
             await assignUserRole(discord_id=self.discord_id, role_id=self.role_id)
 
             return handleSuccessfulResponse(self.questions)
