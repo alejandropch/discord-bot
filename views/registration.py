@@ -26,7 +26,7 @@ class RegisterButtons(discord.ui.View):
         async def validate_button(interaction: discord.Interaction):
             self.participant.deleteResponse()
             await self.participant.setListOfQuestions(option['id'])
-            self.participant.setRoleID(option['role_id'])
+            #self.participant.setRoleID(option['role_id'])
 
             # if Season does not have fields then register, else, use RegisterModal
             if(len(self.participant.questions) == 0):

@@ -13,12 +13,7 @@ async def getSeasons(discord_id: str = None, unregistered: bool = False):
         'Authorization': 'Bearer ' + os.environ["API_KEY"]
     })
 
-    res = x.json()
-
-    if res['status'] != 'success':
-        raise ValueError(res['message'])
-
-    return res
+    return x.json()
 
 # gets a random event question from the selected season
 

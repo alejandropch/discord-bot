@@ -29,7 +29,7 @@ from utils.classes import Participant
 from utils.seasons import getSeasons
 from utils.user import findOrCreateUser 
 from utils.seasons import getRandomQuestion
-
+import traceback
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
@@ -75,7 +75,7 @@ async def register(interaction: discord.Interaction):
         if len(options) == 1:
             season_id = options[0]['id']
             await participant.setListOfQuestions(season_id)
-            participant.setRoleID(options[0]['role_id'])
+            #participant.setRoleID(options[0]['role_id'])
             
             # if Season does not have questions(fields) then register, else, use the register Modal
             if(len(participant.questions) == 0):
@@ -90,7 +90,7 @@ async def register(interaction: discord.Interaction):
             await interaction.response.send_message(response['question'], view=RegisterSeasonButtons(options, question=response['question'], participant=participant), ephemeral=True)
         
     except Exception as err:
-        print(err)
+        print(traceback.format_exc())
         await interaction.response.send_message("Something went wrong!", ephemeral=True)
 
 # @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')
