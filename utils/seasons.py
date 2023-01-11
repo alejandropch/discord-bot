@@ -23,10 +23,10 @@ async def getSeasons(discord_id: str = None, unregistered: bool = False):
 # gets a random event question from the selected season
 
 
-async def getRandomQuestion(season_id):
+async def getRandomQuestion(season_id, user):
     route = f'/trivia/random-event/{season_id}'
 
-    x = requests.get(os.environ["API_URL"] + route, headers={
+    x = requests.get(os.environ["API_URL"] + route, params={ 'discord_id': str(user.id)}, headers={
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + os.environ["API_KEY"]
     })

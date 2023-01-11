@@ -29,7 +29,7 @@ class SeasonButtons(discord.ui.View):
     def generate_callback(self, option: str):
         
         async def validate_button(interaction: discord.Interaction):
-                response = await getRandomQuestion(season_id=option['id'])
+                response = await getRandomQuestion(season_id=option['id'], user=interaction.user)
                 if response['status'] == 'success':
                     if response['data']['multiple']:
                         await interaction.response.send_message(response['data']['question'], view=Buttons(options=response['data']['options'], event=response['data']['event'], question=response['data']['question']), ephemeral=True)

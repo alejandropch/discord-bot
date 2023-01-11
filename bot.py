@@ -114,7 +114,7 @@ async def trivia(interaction: discord.Interaction):
         if season_count == 0:
             await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
         elif season_count == 1:
-            question = await getRandomQuestion(season_id=response['data']['options'][0]['id'])
+            question = await getRandomQuestion(season_id=response['data']['options'][0]['id'], user=interaction.user)
             if question['status'] == 'success':
                 if question['data']['multiple']:
                     await interaction.response.send_message(question['data']['question'], view=Buttons(options=question['data']['options'], event=question['data']['event'], question=question['data']['question']), ephemeral=True)
