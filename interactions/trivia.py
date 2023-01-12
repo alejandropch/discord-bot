@@ -11,7 +11,7 @@ async def handle(interaction: discord.Interaction, event: str, answer: str):
             "discord_username": interaction.user.name + '#' + interaction.user.discriminator,
             "avatar_url": str(interaction.user.avatar.url if interaction.user.avatar is not None else '')
         },
-        "event_code": event,
+        "event": event,
         "answer": answer
     }
 

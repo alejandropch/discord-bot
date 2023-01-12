@@ -7,21 +7,30 @@ import os
 from discord.ext import commands
 from discord import app_commands
 
-from utils.User import User
 
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
-from interactions.register import handle as handleRegister
 from interactions.trivia import handle as handleTrivia
 from interactions.random import handle as handleRandom
 from interactions.leaderboard import handle as handleLeaderboard
 from interactions.mult import handle as handleMult
 from interactions.mult import getEvent
-from views.RegisterModal import RegisterModal
+
 # views
 from views.views import Buttons
-from views.modal import TriviaModal
-
+from views.leaderboard import SeasonButtons as LeaderboardSeasonButtons
+from views.trivia import SeasonButtons as TriviaSeasonButtons
+from views.registration import RegisterButtons as RegisterSeasonButtons
+from views.registration import RegisterModal
+from views.trivia import TriviaModal
+from views.rules import RulesButtons
+from views.rules import showTC
+# utils
+from utils.classes import Participant
+from utils.seasons import getSeasons
+from utils.user import findOrCreateUser 
+from utils.seasons import getRandomQuestion
+import traceback
 
 load_dotenv()
 bot_token = os.environ["BOT_TOKEN"]
@@ -48,51 +57,111 @@ client = aclient()
 tree = app_commands.CommandTree(client)
 
 
-@ tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
-async def register(interaction: discord.Interaction, season: str):
-    participant = User(client)
-
+@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
+async def register(interaction: discord.Interaction):
+    participant = Participant(interaction)
+    
     try:
-        [response, isRegistered] = await handleRegister(interaction, season, participant)
-        """ await interaction.response.send_message(response, ephemeral=True) """
-        if isRegistered is True:
-            return
+        # registering the user into the db if not already
+        await findOrCreateUser(interaction)
+
+        response = (await getSeasons(discord_id=str(interaction.user.id), unregistered=True))['data']
+        options = response['options']
+
+        # if there is no options
+        if len(options) == 0:
+            await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)
         
-        await interaction.response.send_modal(RegisterModal(season=season,participant=participant))
+        # if there is one options
+        if len(options) == 1:
+            season_id = options[0]['id']
+            await participant.setListOfQuestions(season_id)
+            #participant.setRoleID(options[0]['role_id'])
+            
+            # if Season does not have questions(fields) then register, else, use the register Modal
+            if(len(participant.questions) == 0):
+                res = await participant.handleRequest(season_id)
+                await interaction.response.send_message(res, ephemeral=True)
 
-    except NameError as err:
-        await interaction.response.send_message(err, ephemeral=True)
-        return
+            if(len(participant.questions) > 0):
+                await interaction.response.send_modal(RegisterModal(participant=participant, season_id=season_id))
+
+        # if there is more than one option
+        if len(options) > 1:
+            await interaction.response.send_message(response['question'], view=RegisterSeasonButtons(options, question=response['question'], participant=participant), ephemeral=True)
+        
+    except Exception as err:
+        print(traceback.format_exc())
+        await interaction.response.send_message("Something went wrong!", ephemeral=True)
+
+# @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')
+# async def attendance(interaction: discord.Interaction, event: str):
+#     await interaction.response.send_message(f"You've selected the attendance slash command", ephemeral=True)
 
 
-@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='attendance', description='Attend discord events and earn points')
-async def attendance(interaction: discord.Interaction, event: str):
-    await interaction.response.send_message(f"You've selected the attendance slash command", ephemeral=True)
-
-
-@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='random', description='Random events to earn points')
-async def random(interaction: discord.Interaction, event: str):
-    response = await handleRandom(interaction, event)
-    await interaction.response.send_message(response, ephemeral=True)
+# @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='random', description='Random events to earn points')
+# async def random(interaction: discord.Interaction, event: str):
+#     response = await handleRandom(interaction, event)
+#     await interaction.response.send_message(response, ephemeral=True)
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
-async def trivia(interaction: discord.Interaction, event: str):
-    response = await getEvent(event)
-    print(response)
+async def trivia(interaction: discord.Interaction):
+    response = await getSeasons(discord_id=str(interaction.user.id))
     if response['status'] == 'success':
-        if response['data']['multiple']:
-            await interaction.response.send_message(response['data']['question'], view=Buttons(options=response['data']['options'], event=event, question=response['data']['question']), ephemeral=True)
+        season_count = len(response['data']['options'])
+        if season_count == 0:
+            await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
+        elif season_count == 1:
+            question = await getRandomQuestion(season_id=response['data']['options'][0]['id'], user=interaction.user)
+            if question['status'] == 'success':
+                if question['data']['multiple']:
+                    await interaction.response.send_message(question['data']['question'], view=Buttons(options=question['data']['options'], event=question['data']['event'], question=question['data']['question']), ephemeral=True)
+                else:
+                    await interaction.response.send_modal(TriviaModal(title=question['data']['question'], event=question['data']['event']))
+            else:
+                await interaction.response.send_message(question['message'], ephemeral=True)
         else:
-            await interaction.response.send_modal(TriviaModal(title=response['data']['question'], event=event))
+            await interaction.response.send_message(response['data']['question'], view=TriviaSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
     else:
         await interaction.response.send_message(response['message'], ephemeral=True)
 
 
-
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
-async def leaderboard(interaction: discord.Interaction, season: str):
-    response = await handleLeaderboard(interaction, season)
-    await interaction.response.send_message(response, ephemeral=True)
+async def leaderboard(interaction: discord.Interaction):
+    try:
+        response = await getSeasons()
+        if response['status'] == 'success':
+            await interaction.response.send_message(response['data']['question'], view=LeaderboardSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
+        else:
+            await interaction.response.send_message(response['message'], ephemeral=True)
+    except Exception as err:
+        print(err)
+        await interaction.response.send_message("Something went wrong!", ephemeral=True)
+
+
+@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='rules', description='Terms & Conditions')
+async def rules(interaction: discord.Interaction):
+    try:
+        response = (await getSeasons())['data']
+
+        options = response['options']
+
+        # if there is no options
+        if len(options) == 0:
+            await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
+        
+        # if there is one options
+        if len(options) == 1:
+            await showTC(interaction=interaction, option=options[0])
+            
+        # if there is more than one option
+        if len(options) > 1:
+            await interaction.response.send_message(response['question'], view=RulesButtons(options=options), ephemeral=True)
+        
+    except Exception as err:
+        print(err)
+        await interaction.response.send_message("Something went wrong!", ephemeral=True)
+
 
 client.run(bot_token)

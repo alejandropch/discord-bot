@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import json
 import os
 
-async def handle(interaction: discord.Interaction, season: str):
+async def handle(interaction: discord.Interaction, season: int):
     data = {
         "member": {
             "discord_id": str(interaction.user.id),
@@ -14,10 +14,17 @@ async def handle(interaction: discord.Interaction, season: str):
         "season": season
     }
 
-    x = requests.post(os.environ["API_URL"] + '/interactions/leaderboard', data = json.dumps(data), headers = {
+    x = requests.get(os.environ["API_URL"] + '/leaderboard/' + str(season), headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
         
-    return x.json()['message']
+    return x.json()
 
+async def getSeasons():
+    x = requests.get(os.environ["API_URL"] + '/options/leaderboard', headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + os.environ["API_KEY"]
+        })
+
+    return x.json()
