@@ -76,7 +76,7 @@ async def register(interaction: discord.Interaction):
         if len(options) == 1:
             season_id = options[0]['id']
             await participant.setListOfQuestions(season_id)
-            #participant.setRoleID(options[0]['role_id'])
+            participant.setRoleID(options[0]['role_id'])
             
             # if Season does not have questions(fields) then register, else, use the register Modal
             if(len(participant.questions) == 0):

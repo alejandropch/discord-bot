@@ -82,7 +82,7 @@ class FormManager:
             self.season_id = season_id
 
     def setRoleID(self, role_id: str):
-            self.role_id = int(role_id)
+            self.role_id = int(role_id) if role_id else''
 
     def joinAnswers(self):
         """ collects all questions' id with its answer if the form have questions, if not, it will return an array with empty attributes """
