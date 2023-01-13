@@ -3,7 +3,6 @@ from discord.ext import commands
 from discord import app_commands
 from utils.classes import Participant
 
-
 class RegisterButtons(discord.ui.View):
     def __init__(self, options=[], question='', participant: Participant = None):
         super().__init__(timeout=180)
@@ -48,7 +47,7 @@ class RegisterModal(discord.ui.Modal):
     def start(self):
         for question in self.participant.questions:
             answer = discord.ui.TextInput(
-                label=question['question'], style=discord.TextStyle.short, required=True)
+                label=question['question'], style=discord.TextStyle.short, max_length=100 ,required=True)
             self.add_item(answer)
             self.participant.saveResponse(answer)
 
