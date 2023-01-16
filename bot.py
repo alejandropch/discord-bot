@@ -65,28 +65,28 @@ async def register(interaction: discord.Interaction):
         # registering the user into the db if not already
         await findOrCreateUser(interaction)
 
-        response = (await getSeasons(discord_id=str(interaction.user.id), unregistered=True))['data']
-        options = response['options']
+        response = await getSeasons(discord_id=str(interaction.user.id), unregistered=True)
 
-        # if there is no options
+        if response['status'] != 'success':
+            await interaction.response.send_message(response['message'], ephemeral=True)
+            return
+
+        options = response['options']['data']
+
         if len(options) == 0:
             await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)
         
-        # if there is one options
         if len(options) == 1:
             season_id = options[0]['id']
             await participant.setListOfQuestions(season_id)
-            #participant.setRoleID(options[0]['role_id'])
             
-            # if Season does not have questions(fields) then register, else, use the register Modal
-            if(len(participant.questions) == 0):
+            if len(participant.questions) == 0:
                 res = await participant.handleRequest(season_id)
                 await interaction.response.send_message(res, ephemeral=True)
 
-            if(len(participant.questions) > 0):
+            if len(participant.questions) > 0:
                 await interaction.response.send_modal(RegisterModal(participant=participant, season_id=season_id))
 
-        # if there is more than one option
         if len(options) > 1:
             await interaction.response.send_message(response['question'], view=RegisterSeasonButtons(options, question=response['question'], participant=participant), ephemeral=True)
         
@@ -131,10 +131,17 @@ async def trivia(interaction: discord.Interaction):
 async def leaderboard(interaction: discord.Interaction):
     try:
         response = await getSeasons()
-        if response['status'] == 'success':
-            await interaction.response.send_message(response['data']['question'], view=LeaderboardSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
-        else:
+
+        if response['status'] != 'success':
             await interaction.response.send_message(response['message'], ephemeral=True)
+            return
+
+        if len(response['data']['options']) == 0:
+            await interaction.response.send_message("Apparently you there is not any active seasons", ephemeral=True)
+
+        if len(response['data']['options']) > 0:
+            await interaction.response.send_message(response['data']['question'], view=LeaderboardSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
+
     except Exception as err:
         print(err)
         await interaction.response.send_message("Something went wrong!", ephemeral=True)
@@ -143,19 +150,20 @@ async def leaderboard(interaction: discord.Interaction):
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='rules', description='Terms & Conditions')
 async def rules(interaction: discord.Interaction):
     try:
-        response = (await getSeasons())['data']
+        response = await getSeasons()
+        
+        if response['status'] != 'success':
+            await interaction.response.send_message(response['message'], ephemeral=True)
+            return
 
-        options = response['options']
+        options = response['options']['data']
 
-        # if there is no options
         if len(options) == 0:
             await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
         
-        # if there is one options
         if len(options) == 1:
             await showTC(interaction=interaction, option=options[0])
             
-        # if there is more than one option
         if len(options) > 1:
             await interaction.response.send_message(response['question'], view=RulesButtons(options=options), ephemeral=True)
         
