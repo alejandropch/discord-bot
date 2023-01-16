@@ -137,7 +137,7 @@ async def leaderboard(interaction: discord.Interaction):
             return
 
         if len(response['data']['options']) == 0:
-            await interaction.response.send_message("Apparently you there is not any active seasons", ephemeral=True)
+            await interaction.response.send_message("Apparently, there are no active seasons", ephemeral=True)
 
         if len(response['data']['options']) > 0:
             await interaction.response.send_message(response['data']['question'], view=LeaderboardSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
