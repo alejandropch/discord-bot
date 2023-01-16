@@ -4,17 +4,9 @@ from dotenv import load_dotenv
 import json
 import os
 
-async def handle(interaction: discord.Interaction, season: int):
-    data = {
-        "member": {
-            "discord_id": str(interaction.user.id),
-            "discord_username": interaction.user.name + '#' + interaction.user.discriminator,
-            "avatar_url": str(interaction.user.avatar.url if interaction.user.avatar is not None else '')
-        },
-        "season": season
-    }
+async def handle(discord_id:int, season:int):
 
-    x = requests.get(os.environ["API_URL"] + '/leaderboard/' + str(interaction.user.id) + "/season/" + str(season), headers = {
+    x = requests.get(os.environ["API_URL"] + '/leaderboard/' + str(discord_id) + "/season/" + str(season), headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
