@@ -14,7 +14,7 @@ async def handle(interaction: discord.Interaction, season: int):
         "season": season
     }
 
-    x = requests.get(os.environ["API_URL"] + '/leaderboard/' + str(season), headers = {
+    x = requests.get(os.environ["API_URL"] + '/leaderboard/' + str(interaction.user.id) + "/season/" + str(season), headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
