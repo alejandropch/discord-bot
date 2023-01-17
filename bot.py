@@ -71,7 +71,7 @@ async def register(interaction: discord.Interaction):
             await interaction.response.send_message(response['message'], ephemeral=True)
             return
 
-        options = response['options']['data']
+        options = response['data']['options']
 
         if len(options) == 0:
             await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)
@@ -131,7 +131,7 @@ async def trivia(interaction: discord.Interaction):
 async def leaderboard(interaction: discord.Interaction):
     try:
         response = await getSeasons()
-
+            
         if response['status'] != 'success':
             await interaction.response.send_message(response['message'], ephemeral=True)
             return
@@ -156,7 +156,7 @@ async def rules(interaction: discord.Interaction):
             await interaction.response.send_message(response['message'], ephemeral=True)
             return
 
-        options = response['options']['data']
+        options = response['data']['options']
 
         if len(options) == 0:
             await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
