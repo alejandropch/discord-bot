@@ -88,7 +88,7 @@ async def register(interaction: discord.Interaction):
                 await interaction.response.send_modal(RegisterModal(participant=participant, season_id=season_id))
 
         if len(options) > 1:
-            await interaction.response.send_message(response['question'], view=RegisterSeasonButtons(options, question=response['question'], participant=participant), ephemeral=True)
+            await interaction.response.send_message(response['data']['question'], view=RegisterSeasonButtons(options, question=response['data']['question'], participant=participant), ephemeral=True)
         
     except Exception as err:
         print(traceback.format_exc())
@@ -165,7 +165,7 @@ async def rules(interaction: discord.Interaction):
             await showTC(interaction=interaction, option=options[0])
             
         if len(options) > 1:
-            await interaction.response.send_message(response['question'], view=RulesButtons(options=options), ephemeral=True)
+            await interaction.response.send_message(response['data']['question'], view=RulesButtons(options=options), ephemeral=True)
         
     except Exception as err:
         print(err)
