@@ -186,7 +186,7 @@ async def puzzle(interaction: discord.Interaction):
             await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
 
         elif season_count == 1:
-            question = await getRandomQuestion(season_id=response['data']['options'][0]['id'], user=interaction.user)
+            question = await getRandomQuestion(season_id=response['data']['options'][0]['id'], user=interaction.user, puzzle=True)
             if question['status'] == 'success':
                 await showPuzzle(interaction, question)
             else:
