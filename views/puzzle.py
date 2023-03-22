@@ -36,13 +36,10 @@ class Puzzle(discord.ui.View):
         return validate_button
 
 async def showPuzzle(interaction, question):
-    
     button = Button(title= question['data']['question'], event=question['data']['event'])
-    embed = discord.Embed(title=question['data']['event']['name'], description=question['data']['question'])
-    embed.set_image(url=puzzle_image)
+    dict_content = json.loads(question['data']['question'])
+    embed = discord.Embed.from_dict(dict_content)
     await interaction.response.send_message(view=button, embed=embed, ephemeral=True)
-
-
 
 class Button(discord.ui.View):
     def __init__(self, title='', event = ''):
