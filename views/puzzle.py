@@ -27,7 +27,7 @@ class Puzzle(discord.ui.View):
     def generate_callback(self, option: str): # when an option (season) is clicked
         
         async def validate_button(interaction: discord.Interaction):
-            question = await getRandomQuestion(season_id=option['id'], user=interaction.user)
+            question = await getRandomQuestion(season_id=option['id'], user=interaction.user, puzzle=True)
             if question['status'] == 'success':
                 await showPuzzle(interaction, question)
             else:
@@ -36,17 +36,17 @@ class Puzzle(discord.ui.View):
         return validate_button
 
 async def showPuzzle(interaction, question):
+    
     button = Button(title= question['data']['question'], event=question['data']['event'])
-    embed = discord.Embed(title="Puzzle #1", description="solve this challenge\n")
+    embed = discord.Embed(title=question['data']['event']['name'], description=question['data']['question'])
     embed.set_image(url=puzzle_image)
-    await interaction.response.send_message(view=button, embed=embed)
+    await interaction.response.send_message(view=button, embed=embed, ephemeral=True)
 
 
 
 class Button(discord.ui.View):
     def __init__(self, title='', event = ''):
         super().__init__(timeout=180)
-        self.title=title
         self.event = event
         self.build_buttons()
     
@@ -59,13 +59,13 @@ class Button(discord.ui.View):
     def generate_callback(self):
 
         async def validate_button(interaction: discord.Interaction):
-            await interaction.response.send_modal(PuzzleModal(title=self.title, event=self.event))
+            await interaction.response.send_modal(PuzzleModal(event=self.event))
 
         return validate_button
 
 class PuzzleModal(discord.ui.Modal):
-    def __init__(self, title = 'Your answer!', event = ''):
-        super().__init__(title = title)
+    def __init__(self,  event = ''):
+        super().__init__()
         self.event = event
 
     answer = discord.ui.TextInput(label = 'Answer', style = discord.TextStyle.short, required = True)
@@ -73,7 +73,7 @@ class PuzzleModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction):
         
         response = await handleTrivia(interaction, self.event, self.answer.value)
-        embed = discord.Embed(title = self.title, description = f"**{self.answer.label}**\n{self.answer}\n\n**{response}**")
+        embed = discord.Embed(title = 'Write your answer!', description = f"**{self.answer.label}**\n{self.answer}\n\n**{response}**")
         embed.set_author(name = interaction.user, icon_url = interaction.user.avatar)
         await interaction.response.send_message(embed = embed, ephemeral = True)
 
