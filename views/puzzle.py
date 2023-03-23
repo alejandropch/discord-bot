@@ -28,17 +28,23 @@ class Puzzle(discord.ui.View):
         
         async def validate_button(interaction: discord.Interaction):
             question = await getRandomQuestion(season_id=option['id'], user=interaction.user, puzzle=True)
-            if question['status'] == 'success':
-                await showPuzzle(interaction, question)
-            else:
-                await interaction.response.send_message(question['message'], ephemeral=True)
-        
+            try:
+                if question['status'] == 'success':
+                    await showPuzzle(interaction, question)
+                else:
+                    await interaction.response.send_message(question['message'], ephemeral=True)
+            except Exception as e:
+                print(e)
+                await interaction.response.send_message("Something went wrong!", ephemeral=True)
+
         return validate_button
 
 async def showPuzzle(interaction, question):
     button = Button(title= question['data']['question'], event=question['data']['event'])
     dict_content = json.loads(question['data']['question'])
-    embed = discord.Embed.from_dict(dict_content)
+    dict_content_encoded = json.dumps(dict_content, ensure_ascii=True)
+    list_content_embeds = json.loads(dict_content_encoded)['embeds']
+    embed = discord.Embed.from_dict(list_content_embeds[0])
     await interaction.response.send_message(view=button, embed=embed, ephemeral=True)
 
 class Button(discord.ui.View):
@@ -64,14 +70,10 @@ class PuzzleModal(discord.ui.Modal):
     def __init__(self, title = 'Puzzle!',  event = ''):
         super().__init__(title = title)
         self.event = event
-
     answer = discord.ui.TextInput(label = 'Answer', style = discord.TextStyle.short, required = True)
 
     async def on_submit(self, interaction: discord.Interaction):
-        
         response = await handleTrivia(interaction, self.event, self.answer.value)
         embed = discord.Embed(title = self.event['name'], description = f"**{self.answer.label}**\n{self.answer}\n\n**{response}**")
         embed.set_author(name = interaction.user, icon_url = interaction.user.avatar)
         await interaction.response.send_message(embed = embed, ephemeral = True)
-
-
