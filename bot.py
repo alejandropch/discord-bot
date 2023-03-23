@@ -60,7 +60,7 @@ client = aclient()
 tree = app_commands.CommandTree(client)
 
 
-@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register an user')
+@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register for a contest or challenge season')
 async def register(interaction: discord.Interaction):
     participant = Participant(interaction)
     
@@ -183,7 +183,7 @@ async def puzzle(interaction: discord.Interaction):
     if response['status'] == 'success':
         season_count = len(response['data']['options'])
         if season_count == 0:
-            await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
+            await interaction.response.send_message("Use /register to sign up first!", ephemeral=True)
 
         elif season_count == 1:
             question = await getRandomQuestion(season_id=response['data']['options'][0]['id'], user=interaction.user, puzzle=True)
