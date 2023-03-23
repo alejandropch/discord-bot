@@ -25,6 +25,9 @@ from views.registration import RegisterModal
 from views.trivia import TriviaModal
 from views.rules import RulesButtons
 from views.rules import showTC
+from views.puzzle import Puzzle
+from views.puzzle import showPuzzle
+
 # utils
 from utils.classes import Participant
 from utils.seasons import getSeasons
@@ -170,6 +173,30 @@ async def rules(interaction: discord.Interaction):
     except Exception as err:
         print(err)
         await interaction.response.send_message("Something went wrong!", ephemeral=True)
+
+
+
+@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='puzzle', description='Puzzle Challenge')
+async def puzzle(interaction: discord.Interaction):
+    response = await getSeasons(discord_id=str(interaction.user.id))
+
+    if response['status'] == 'success':
+        season_count = len(response['data']['options'])
+        if season_count == 0:
+            await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
+
+        elif season_count == 1:
+            question = await getRandomQuestion(season_id=response['data']['options'][0]['id'], user=interaction.user, puzzle=True)
+            if question['status'] == 'success':
+                await showPuzzle(interaction, question)
+            else:
+                await interaction.response.send_message(question['message'], ephemeral=True)
+
+        else:
+            await interaction.response.send_message(response['data']['question'], view=Puzzle(options=response['data']['options']), ephemeral=True)
+    else:
+        await interaction.response.send_message(response['message'], ephemeral=True)
+
 
 
 client.run(bot_token)
