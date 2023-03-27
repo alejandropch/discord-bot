@@ -179,21 +179,20 @@ async def rules(interaction: discord.Interaction):
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='puzzle', description='Puzzle Challenge')
 async def puzzle(interaction: discord.Interaction):
     response = await getSeasons(discord_id=str(interaction.user.id))
-
     if response['status'] == 'success':
-        season_count = len(response['data']['options'])
+        options = list(response['data']['options'])
+        season_count = len(options)
         if season_count == 0:
             await interaction.response.send_message("Use /register to sign up first!", ephemeral=True)
-
         elif season_count == 1:
-            question = await getRandomQuestion(season_id=response['data']['options'][0]['id'], user=interaction.user, puzzle=True)
+            question = await getRandomQuestion(season_id=options[0]['id'], user=interaction.user, puzzle=True)
             if question['status'] == 'success':
                 await showPuzzle(interaction, question)
             else:
                 await interaction.response.send_message(question['message'], ephemeral=True)
 
-        else:
-            await interaction.response.send_message(response['data']['question'], view=Puzzle(options=response['data']['options']), ephemeral=True)
+        elif season_count > 1:
+            await interaction.response.send_message(response['data']['question'], view=Puzzle(options=options), ephemeral=True)
     else:
         await interaction.response.send_message(response['message'], ephemeral=True)
 
