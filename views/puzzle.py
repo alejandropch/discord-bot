@@ -27,24 +27,23 @@ class Puzzle(discord.ui.View):
     def generate_callback(self, option: str): # when an option (season) is clicked
         
         async def validate_button(interaction: discord.Interaction):
-            question = await getRandomQuestion(season_id=option['id'], user=interaction.user, puzzle=True)
             try:
-                if question['status'] == 'success':
-                    await showPuzzle(interaction, question)
-                else:
-                    await interaction.response.send_message(question['message'], ephemeral=True)
+                await showPuzzle(interaction, option)
             except Exception as e:
                 print(e)
                 await interaction.response.send_message("Something went wrong!", ephemeral=True)
 
         return validate_button
 
-async def showPuzzle(interaction, question):
+async def showPuzzle(interaction, option):
+    question = await getRandomQuestion(season_id=option['id'], user=interaction.user, puzzle=True)
+    if question['status'] != 'success':
+        await interaction.response.send_message(question['message'], ephemeral=True)
+        return
+    
     button = Button(title= question['data']['question'], event=question['data']['event'])
-    dict_content = json.loads(question['data']['question'])
-    dict_content_encoded = json.dumps(dict_content, ensure_ascii=True)
-    list_content_embeds = json.loads(dict_content_encoded)['embeds']
-    embed = discord.Embed.from_dict(list_content_embeds[0])
+    dict_content = json.loads(question['data']['question'])['embeds']
+    embed = discord.Embed.from_dict(dict_content[0])
     await interaction.response.send_message(view=button, embed=embed, ephemeral=True)
 
 class Button(discord.ui.View):
