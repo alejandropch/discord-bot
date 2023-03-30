@@ -185,11 +185,7 @@ async def puzzle(interaction: discord.Interaction):
         if season_count == 0:
             await interaction.response.send_message("Use /register to sign up first!", ephemeral=True)
         elif season_count == 1:
-            question = await getRandomQuestion(season_id=options[0]['id'], user=interaction.user, puzzle=True)
-            if question['status'] == 'success':
-                await showPuzzle(interaction, question)
-            else:
-                await interaction.response.send_message(question['message'], ephemeral=True)
+            await showPuzzle(interaction, option= options[0])
 
         elif season_count > 1:
             await interaction.response.send_message(response['data']['question'], view=Puzzle(options=options), ephemeral=True)
