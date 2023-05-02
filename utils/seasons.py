@@ -5,8 +5,8 @@ import os
 # General Utility functions for seasons
 
 
-async def getSeasons(discord_id: str = None, unregistered: bool = False):
-    route = f'/options/seasons/{discord_id}?unregistered={unregistered}' if discord_id != None else '/options/seasons'
+async def getSeasons(guild_id: str = None, discord_id: str = None, unregistered: bool = False):
+    route = f'/options/{guild_id}/seasons/{discord_id}?unregistered={unregistered}' if discord_id != None else f'/options/{guild_id}/seasons'
 
     x = requests.get(os.environ["API_URL"] + route, headers={
         'Content-Type': 'application/json',

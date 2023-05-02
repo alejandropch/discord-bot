@@ -47,7 +47,8 @@ class aclient(discord.Client):
     async def on_ready(self):
         await self.wait_until_ready()
         if not self.synced:
-            await tree.sync(guild=discord.Object(id=os.environ["GUILD_ID"]))
+            #await tree.sync(guild=discord.Object(id=os.environ["GUILD_ID"]))
+            await tree.sync()
             self.synced = True
         print(f"We have logged in as {self.user}.")
 
@@ -108,9 +109,10 @@ async def register(interaction: discord.Interaction):
 #     await interaction.response.send_message(response, ephemeral=True)
 
 
-@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
+#@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
+@tree.command(name='trivia', description='Answer trivia questions and earn points')
 async def trivia(interaction: discord.Interaction):
-    response = await getSeasons(discord_id=str(interaction.user.id))
+    response = await getSeasons(guild_id=str(interaction.guild_id), discord_id=str(interaction.user.id))
     if response['status'] == 'success':
         season_count = len(response['data']['options'])
         if season_count == 0:
