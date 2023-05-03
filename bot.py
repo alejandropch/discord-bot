@@ -30,7 +30,9 @@ from views.puzzle import showPuzzle
 
 # utils
 from utils.classes import Participant
-from utils.seasons import getSeasons
+from utils.seasons import get_seasons
+from utils.seasons import get_participant_seasons
+from utils.seasons import get_unregistered_participant_seasons
 from utils.user import findOrCreateUser 
 from utils.seasons import getRandomQuestion
 import traceback
@@ -61,7 +63,7 @@ client = aclient()
 tree = app_commands.CommandTree(client)
 
 
-@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='register', description='Register for a contest or challenge season')
+@tree.command(name='register', description='Register for a contest or challenge season')
 async def register(interaction: discord.Interaction):
     participant = Participant(interaction)
     
@@ -69,13 +71,13 @@ async def register(interaction: discord.Interaction):
         # registering the user into the db if not already
         await findOrCreateUser(interaction)
 
-        response = await getSeasons(discord_id=str(interaction.user.id), unregistered=True)
+        response = await get_unregistered_participant_seasons(guild_id=str(interaction.guild_id), participant_id=str(interaction.user.id))
 
         if response['status'] != 'success':
             await interaction.response.send_message(response['message'], ephemeral=True)
             return
 
-        options = response['data']['options']
+        options = response['data']
 
         if len(options) == 0:
             await interaction.response.send_message("Seems that there are not any seasons available to register", ephemeral=True)
@@ -92,7 +94,7 @@ async def register(interaction: discord.Interaction):
                 await interaction.response.send_modal(RegisterModal(participant=participant, season_id=season_id))
 
         if len(options) > 1:
-            await interaction.response.send_message(response['data']['question'], view=RegisterSeasonButtons(options, question=response['data']['question'], participant=participant), ephemeral=True)
+            await interaction.response.send_message('Select a season', view=RegisterSeasonButtons(options, question=response['data']['question'], participant=participant), ephemeral=True)
         
     except Exception as err:
         print(traceback.format_exc())
@@ -112,9 +114,9 @@ async def register(interaction: discord.Interaction):
 #@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
 @tree.command(name='trivia', description='Answer trivia questions and earn points')
 async def trivia(interaction: discord.Interaction):
-    response = await getSeasons(guild_id=str(interaction.guild_id), discord_id=str(interaction.user.id))
+    response = await get_participant_seasons(guild_id=str(interaction.guild_id), discord_id=str(interaction.user.id))
     if response['status'] == 'success':
-        season_count = len(response['data']['options'])
+        season_count = len(response['data'])
         if season_count == 0:
             await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
         elif season_count == 1:
@@ -127,7 +129,7 @@ async def trivia(interaction: discord.Interaction):
             else:
                 await interaction.response.send_message(question['message'], ephemeral=True)
         else:
-            await interaction.response.send_message(response['data']['question'], view=TriviaSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
+            await interaction.response.send_message('Select a season:', view=TriviaSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
     else:
         await interaction.response.send_message(response['message'], ephemeral=True)
 
@@ -135,17 +137,17 @@ async def trivia(interaction: discord.Interaction):
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
 async def leaderboard(interaction: discord.Interaction):
     try:
-        response = await getSeasons()
+        response = await get_seasons(guild_id=str(interaction.guild_id))
             
         if response['status'] != 'success':
             await interaction.response.send_message(response['message'], ephemeral=True)
             return
 
-        if len(response['data']['options']) == 0:
+        if len(response['data']) == 0:
             await interaction.response.send_message("Apparently, there are no active seasons", ephemeral=True)
 
-        if len(response['data']['options']) > 0:
-            await interaction.response.send_message(response['data']['question'], view=LeaderboardSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
+        if len(response['data']) > 0:
+            await interaction.response.send_message('Select a season', view=LeaderboardSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
 
     except Exception as err:
         print(err)
@@ -155,13 +157,13 @@ async def leaderboard(interaction: discord.Interaction):
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='rules', description='Terms & Conditions')
 async def rules(interaction: discord.Interaction):
     try:
-        response = await getSeasons()
+        response = await get_seasons(guild_id=str(interaction.guild_id))
         
         if response['status'] != 'success':
             await interaction.response.send_message(response['message'], ephemeral=True)
             return
 
-        options = response['data']['options']
+        options = response['data']
 
         if len(options) == 0:
             await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
@@ -180,7 +182,7 @@ async def rules(interaction: discord.Interaction):
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='puzzle', description='Puzzle Challenge')
 async def puzzle(interaction: discord.Interaction):
-    response = await getSeasons(discord_id=str(interaction.user.id))
+    response = await get_participant_seasons(discord_id=str(interaction.user.id))
     if response['status'] == 'success':
         options = list(response['data']['options'])
         season_count = len(options)
