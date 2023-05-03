@@ -94,7 +94,7 @@ async def register(interaction: discord.Interaction):
                 await interaction.response.send_modal(RegisterModal(participant=participant, season_id=season_id))
 
         if len(options) > 1:
-            await interaction.response.send_message('Select a season', view=RegisterSeasonButtons(options, question=response['data']['question'], participant=participant), ephemeral=True)
+            await interaction.response.send_message("Select a season", view=RegisterSeasonButtons(options, question="Select a season", participant=participant), ephemeral=True)
         
     except Exception as err:
         print(traceback.format_exc())
