@@ -16,22 +16,22 @@ class FormManager:
         self.season_id = ''
         self.role_id = ''
 
-    async def handleRequest(self,season_id):
+    async def handleRequest(self,guild_id, season_id):
 
         self.setSeasonID(season_id)
         answers = self.joinAnswers()
         
         data = {
-            "season_id": self.season_id,
-            "member": {
-                "id": self.discord_id,
-                "username": self.username,
-                **({"avatar_url":self.avatar_url } if self.avatar_url else {}),
-            },
+            #"season_id": self.season_id,
+            #"member": {
+            #    "id": self.discord_id,
+            #    "username": self.username,
+            #    **({"avatar_url":self.avatar_url } if self.avatar_url else {}),
+            #},
             "answers": answers
         }
 
-        value = requests.post(os.environ["API_URL"] + '/seasons/register', data=json.dumps(data), headers={
+        value = requests.post(os.environ["API_URL"] + '/guilds/' + guild_id + '/seasons/' + season_id + '/participants', data=json.dumps(data), headers={
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
