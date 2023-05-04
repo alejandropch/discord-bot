@@ -110,8 +110,6 @@ async def register(interaction: discord.Interaction):
 #     response = await handleRandom(interaction, event)
 #     await interaction.response.send_message(response, ephemeral=True)
 
-
-#@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
 @tree.command(name='trivia', description='Answer trivia questions and earn points')
 async def trivia(interaction: discord.Interaction):
     response = await get_participant_seasons(guild_id=str(interaction.guild_id), participant_id=str(interaction.user.id))
@@ -139,7 +137,7 @@ async def trivia(interaction: discord.Interaction):
         await interaction.response.send_message('Select a season:', view=TriviaSeasonButtons(options=options, question='Select a Season'), ephemeral=True)
 
 
-@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
+@tree.command(name='leaderboard', description='Season Leaderboard')
 async def leaderboard(interaction: discord.Interaction):
     try:
         response = await get_seasons(guild_id=str(interaction.guild_id))
@@ -147,11 +145,13 @@ async def leaderboard(interaction: discord.Interaction):
         if response['status'] != 'success':
             await interaction.response.send_message(response['message'], ephemeral=True)
             return
+        
+        options = response['data']
 
-        if len(response['data']) == 0:
+        if len(options) == 0:
             await interaction.response.send_message("Apparently, there are no active seasons", ephemeral=True)
 
-        if len(response['data']) > 0:
+        if len(options) > 0:
             await interaction.response.send_message('Select a season', view=LeaderboardSeasonButtons(options=response['data']['options'], question='Select a season'), ephemeral=True)
 
     except Exception as err:
@@ -159,7 +159,7 @@ async def leaderboard(interaction: discord.Interaction):
         await interaction.response.send_message("Something went wrong!", ephemeral=True)
 
 
-@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='rules', description='Terms & Conditions')
+@tree.command(name='rules', description='Terms & Conditions')
 async def rules(interaction: discord.Interaction):
     try:
         response = await get_seasons(guild_id=str(interaction.guild_id))
@@ -177,7 +177,7 @@ async def rules(interaction: discord.Interaction):
             await showTC(interaction=interaction, option=options[0])
             
         if len(options) > 1:
-            await interaction.response.send_message(response['data']['question'], view=RulesButtons(options=options), ephemeral=True)
+            await interaction.response.send_message('Select a season:', view=RulesButtons(options=options), ephemeral=True)
         
     except Exception as err:
         print(err)
@@ -185,22 +185,24 @@ async def rules(interaction: discord.Interaction):
 
 
 
-@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='puzzle', description='Puzzle Challenge')
+@tree.command(name='puzzle', description='Puzzle Challenge')
 async def puzzle(interaction: discord.Interaction):
     response = await get_participant_seasons(guild_id=str(interaction.guild_id), participant_id=str(interaction.user.id))
-    if response['status'] == 'success':
-        options = list(response['data']['options'])
-        season_count = len(options)
-        if season_count == 0:
-            await interaction.response.send_message("Use /register to sign up first!", ephemeral=True)
-        elif season_count == 1:
-            await showPuzzle(interaction, option= options[0])
 
-        elif season_count > 1:
-            await interaction.response.send_message(response['data']['question'], view=Puzzle(options=options), ephemeral=True)
-    else:
+    if response['status'] != 'success':
         await interaction.response.send_message(response['message'], ephemeral=True)
+        return
+    
+    options = response['data']
 
+    if len(options) == 0:
+        await interaction.response.send_message("Use /register to sign up first!", ephemeral=True)
+
+    if len(options) == 1:
+        await showPuzzle(interaction, option= options[0])
+
+    if len(options) > 1:
+        await interaction.response.send_message('Select a season:', view=Puzzle(options=options), ephemeral=True)
 
 
 client.run(bot_token)
