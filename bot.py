@@ -129,7 +129,7 @@ async def trivia(interaction: discord.Interaction):
             else:
                 await interaction.response.send_message(question['message'], ephemeral=True)
         else:
-            await interaction.response.send_message('Select a season:', view=TriviaSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
+            await interaction.response.send_message('Select a season:', view=TriviaSeasonButtons(options=response['data']['options'], question='Select a Season'), ephemeral=True)
     else:
         await interaction.response.send_message(response['message'], ephemeral=True)
 
@@ -147,7 +147,7 @@ async def leaderboard(interaction: discord.Interaction):
             await interaction.response.send_message("Apparently, there are no active seasons", ephemeral=True)
 
         if len(response['data']) > 0:
-            await interaction.response.send_message('Select a season', view=LeaderboardSeasonButtons(options=response['data']['options'], question=response['data']['question']), ephemeral=True)
+            await interaction.response.send_message('Select a season', view=LeaderboardSeasonButtons(options=response['data']['options'], question='Select a season'), ephemeral=True)
 
     except Exception as err:
         print(err)
