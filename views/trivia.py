@@ -1,10 +1,4 @@
 import discord
-import requests
-from dotenv import load_dotenv
-import json
-import os
-from discord.ext import commands
-from discord import app_commands
 from utils.seasons import getRandomQuestion
 from interactions.trivia import handle as handleTrivia
 

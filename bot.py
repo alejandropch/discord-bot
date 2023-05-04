@@ -10,11 +10,11 @@ from discord import app_commands
 
 # install discord.py newest version with: python3 -m pip install -U git+https://github.com/Rapptz/discord.py
 
-from interactions.trivia import handle as handleTrivia
-from interactions.random import handle as handleRandom
-from interactions.leaderboard import handle as handleLeaderboard
-from interactions.mult import handle as handleMult
-from interactions.mult import getEvent
+#from interactions.trivia import handle as handleTrivia
+#from interactions.random import handle as handleRandom
+#from interactions.leaderboard import handle as handleLeaderboard
+#from interactions.mult import handle as handleMult
+#from interactions.mult import getEvent
 
 # views
 from views.views import Buttons

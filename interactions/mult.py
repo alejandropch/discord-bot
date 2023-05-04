@@ -21,10 +21,10 @@ async def handle(interaction: discord.Interaction, event: str, answer: str):
         
     return x.json()['message']
 
-async def getEvent(event: str):
-    x = requests.get(os.environ["API_URL"] + '/options/trivia/' + event, headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + os.environ["API_KEY"]
-        })
-
-    return x.json()
+#async def getEvent(event: str):
+#    x = requests.get(os.environ["API_URL"] + '/options/trivia/' + event, headers = {
+#            'Content-Type': 'application/json',
+#            'Authorization': 'Bearer ' + os.environ["API_KEY"]
+#        })
+#
+#    return x.json()
