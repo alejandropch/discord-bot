@@ -28,6 +28,7 @@ class FormManager:
             #    "username": self.username,
             #    **({"avatar_url":self.avatar_url } if self.avatar_url else {}),
             #},
+            "participant_id": self.discord_id,
             "answers": answers
         }
 
