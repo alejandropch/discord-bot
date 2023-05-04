@@ -152,7 +152,7 @@ async def leaderboard(interaction: discord.Interaction):
             await interaction.response.send_message("Apparently, there are no active seasons", ephemeral=True)
 
         if len(options) > 0:
-            await interaction.response.send_message('Select a season', view=LeaderboardSeasonButtons(options=response['data']['options'], question='Select a season'), ephemeral=True)
+            await interaction.response.send_message('Select a season', view=LeaderboardSeasonButtons(options=options, question='Select a season'), ephemeral=True)
 
     except Exception as err:
         print(err)
