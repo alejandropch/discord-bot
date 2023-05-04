@@ -33,18 +33,9 @@ async def findOrCreateUser(interaction):
     return find
 
 
-async def assignUserRole(discord_id, role_id=''):
-    if role_id =='':
-        return
+async def assign_role_to_participant(guild_id, participant_id, role_id):
 
-    data = {
-        'member': {
-            'discord_id':discord_id,
-            'role_id' : role_id
-        },
-        'guild_id': os.environ["GUILD_ID"]
-    }
-    x = requests.put(os.environ["API_URL"] + f'/participants/assign-role', data = json.dumps(data), headers={
+    x = requests.put(os.environ["API_URL"] + f'/guilds/{guild_id}/participants/{participant_id}/assign-role/{role_id}', headers={
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + os.environ["API_KEY"]
     })
