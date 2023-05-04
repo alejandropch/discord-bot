@@ -114,7 +114,7 @@ async def register(interaction: discord.Interaction):
 #@tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='trivia', description='Answer trivia questions and earn points')
 @tree.command(name='trivia', description='Answer trivia questions and earn points')
 async def trivia(interaction: discord.Interaction):
-    response = await get_participant_seasons(guild_id=str(interaction.guild_id), discord_id=str(interaction.user.id))
+    response = await get_participant_seasons(guild_id=str(interaction.guild_id), participant_id=str(interaction.user.id))
     if response['status'] == 'success':
         season_count = len(response['data'])
         if season_count == 0:
@@ -182,7 +182,7 @@ async def rules(interaction: discord.Interaction):
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='puzzle', description='Puzzle Challenge')
 async def puzzle(interaction: discord.Interaction):
-    response = await get_participant_seasons(discord_id=str(interaction.user.id))
+    response = await get_participant_seasons(guild_id=str(interaction.guild_id), participant_id=str(interaction.user.id))
     if response['status'] == 'success':
         options = list(response['data']['options'])
         season_count = len(options)
