@@ -115,23 +115,28 @@ async def register(interaction: discord.Interaction):
 @tree.command(name='trivia', description='Answer trivia questions and earn points')
 async def trivia(interaction: discord.Interaction):
     response = await get_participant_seasons(guild_id=str(interaction.guild_id), participant_id=str(interaction.user.id))
-    if response['status'] == 'success':
-        season_count = len(response['data'])
-        if season_count == 0:
-            await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
-        elif season_count == 1:
-            question = await getRandomQuestion(season_id=response['data']['options'][0]['id'], user=interaction.user)
-            if question['status'] == 'success':
-                if question['data']['multiple']:
-                    await interaction.response.send_message(question['data']['question'], view=Buttons(options=question['data']['options'], event=question['data']['event'], question=question['data']['question']), ephemeral=True)
-                else:
-                    await interaction.response.send_modal(TriviaModal(title=question['data']['question'], event=question['data']['event']))
-            else:
-                await interaction.response.send_message(question['message'], ephemeral=True)
-        else:
-            await interaction.response.send_message('Select a season:', view=TriviaSeasonButtons(options=response['data']['options'], question='Select a Season'), ephemeral=True)
-    else:
+
+    if response['status'] != 'success':
         await interaction.response.send_message(response['message'], ephemeral=True)
+        return
+    
+    options = response['data']
+
+    if len(options) == 0:
+        await interaction.response.send_message("Apparently you don't have any active seasons", ephemeral=True)
+    
+    if len(options) == 1:
+        question = await getRandomQuestion(season_id=options[0]['id'], user=interaction.user)
+        if question['status'] == 'success':
+            if question['data']['multiple']:
+                await interaction.response.send_message(question['data']['question'], view=Buttons(options=options, event=question['data']['event'], question=question['data']['question']), ephemeral=True)
+            else:
+                await interaction.response.send_modal(TriviaModal(title=question['data']['question'], event=question['data']['event']))
+        else:
+            await interaction.response.send_message(question['message'], ephemeral=True)
+    
+    if len(options) > 1:
+        await interaction.response.send_message('Select a season:', view=TriviaSeasonButtons(options=options, question='Select a Season'), ephemeral=True)
 
 
 @tree.command(guild=discord.Object(id=os.environ["GUILD_ID"]), name='leaderboard', description='Season Leaderboard')
