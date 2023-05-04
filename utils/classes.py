@@ -44,7 +44,7 @@ class FormManager:
                 return "Something went wrong!"
             
             # after successfully register a participant, it should assign the discord user a role 
-            await assign_role_to_participant(guild_id=guild_id, participant_id=self.discord_id, role_id=self.role_id)
+            # await assign_role_to_participant(guild_id=guild_id, participant_id=self.discord_id, role_id=self.role_id)
 
             return handleSuccessfulResponse(self.questions)
 
