@@ -33,9 +33,9 @@ async def findOrCreateUser(interaction):
     return find
 
 
-async def assign_role_to_participant(guild_id, participant_id, role_id):
-
-    x = requests.put(os.environ["API_URL"] + f'/guilds/{guild_id}/participants/{participant_id}/assign-role/{role_id}', headers={
+async def assign_role_to_participant(guild_id: str = None, participant_id: str = None, role_id: str = None):
+    endpoint = f'/guilds/{guild_id}/participants/{participant_id}/assign-role/{role_id}'
+    x = requests.put(os.environ["API_URL"] + endpoint, headers={
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + os.environ["API_KEY"]
     })

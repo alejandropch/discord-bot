@@ -87,7 +87,7 @@ async def register(interaction: discord.Interaction):
             await participant.setListOfQuestions(season_id)
             
             if len(participant.questions) == 0:
-                res = await participant.handleRequest(interaction.guild_id, season_id)
+                res = await participant.handleRequest(guild_id = str(interaction.guild_id), season_id = str(season_id))
                 await interaction.response.send_message(res, ephemeral=True)
 
             if len(participant.questions) > 0:

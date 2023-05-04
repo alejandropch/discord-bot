@@ -16,7 +16,7 @@ class FormManager:
         self.season_id = ''
         self.role_id = ''
 
-    async def handleRequest(self,guild_id, season_id):
+    async def handleRequest(self, guild_id: str = None, season_id: str = None):
 
         self.setSeasonID(season_id)
         answers = self.joinAnswers()
@@ -32,7 +32,8 @@ class FormManager:
             "answers": answers
         }
 
-        value = requests.post(os.environ["API_URL"] + '/guilds/' + guild_id + '/seasons/' + season_id + '/participants', data=json.dumps(data), headers={
+        endpoint = f'/guilds/{guild_id}/seasons/{season_id}/participants'
+        value = requests.post(os.environ["API_URL"] + endpoint, data=json.dumps(data), headers={
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + os.environ["API_KEY"]
         })
