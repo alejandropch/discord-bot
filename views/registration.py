@@ -62,7 +62,7 @@ class RegisterModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction):
         try:
             await self.orginizeDataPrevSubmit()
-            response = await self.participant.handleRequest(self.season_id)
+            response = await self.participant.handleRequest(interaction.guild_id, self.season_id)
             embed = discord.Embed(title=self.title, description=f"{self.participant.getOutputResult(self.participant)}**{response}**")
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             await interaction.response.send_message(embed=embed, ephemeral=True)
