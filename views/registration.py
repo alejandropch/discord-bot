@@ -29,7 +29,7 @@ class RegisterButtons(discord.ui.View):
 
             # if Season does not have fields then register, else, use RegisterModal
             if(len(self.participant.questions) == 0):
-                res = await self.participant.handleRequest(season_id=option['id'])
+                res = await self.participant.handleRequest(guild_id = str(interaction.guild_id), season_id = str(option['id']))
                 await interaction.response.send_message(res, ephemeral=True)
             else:
                 await interaction.response.send_modal(RegisterModal(participant=self.participant, season_id=option['id']))
@@ -62,7 +62,7 @@ class RegisterModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction):
         try:
             await self.orginizeDataPrevSubmit()
-            response = await self.participant.handleRequest(self.season_id)
+            response = await self.participant.handleRequest(guild_id = str(interaction.guild_id), season_id = str(self.season_id))
             embed = discord.Embed(title=self.title, description=f"{self.participant.getOutputResult(self.participant)}**{response}**")
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             await interaction.response.send_message(embed=embed, ephemeral=True)
