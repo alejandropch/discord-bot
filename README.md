@@ -1,6 +1,6 @@
-# Discord Community Engagement Bot
+# Discord Bot
 
-Bot provided to handle user interaction and collect user data from guilds where it is present.
+Hey guys, this is a discord bot I made i while ago to familiarize myself with the [Discord.py](https://discordpy.readthedocs.io/en/stable) library. It also includes some [Boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) to connect an AWS database. I designed this to manage user interaction and collect user data from guilds where it is present.
 
 ## How to run locally
 
@@ -22,6 +22,6 @@ Finally run the bot:
  - Install PM2 node package.
  - Run:``` pm2 start bot.py --name="<bot name>" --interpreter=python3```
 
- ## Discord.py Documentation
+## Disclaimer
 
-[Official Documentation](https://discordpy.readthedocs.io/en/latest/index.html)
+This is a simple project I made to help me handle real world problems. This code does not represent any system running in production
